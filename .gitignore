@@ -231,3 +231,6 @@ uploads/*                   # Uploaded files
 uploads/.gitkeep           # Keep directory structure
 
 CLAUDE.md
+.gitnexus
+.dmux/
+.worktrees/
