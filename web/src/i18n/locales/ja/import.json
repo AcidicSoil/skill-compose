@@ -44,6 +44,16 @@
       "notFolder": "ファイルではなくフォルダをドロップしてください。.skill/.zip ファイルは「ファイルアップロード」タブをご利用ください。",
       "noSkillMd": "フォルダのルートに SKILL.md ファイルが必要です",
       "readFailed": "フォルダの内容の読み取りに失敗しました"
+    },
+    "multi": {
+      "label": "複数スキルのインポート",
+      "detectedSkills": "{{count}} 個のスキルが検出されました"
+    },
+    "conflict": {
+      "label": "競合の処理方法",
+      "skip": "既存をスキップ",
+      "copy": "コピーを作成",
+      "overwrite": "上書き"
     }
   },
   "status": {
@@ -55,7 +65,15 @@
     "genericError": "インポートに失敗しました",
     "githubError": "GitHub からのインポートに失敗しました",
     "skippedFiles": "{{count}} 個のファイルがスキップされました（非対応の種類：.exe、.dll、.so 等のコンパイル済みファイル）",
-    "skippedFilesList": "スキップ：{{files}}"
+    "skippedFilesList": "スキップ：{{files}}",
+    "bulkImported": "{{count}} 件インポート済み",
+    "bulkSkipped": "{{count}} 件スキップ",
+    "bulkFailed": "{{count}} 件失敗",
+    "resultImported": "インポート済み",
+    "resultSkipped": "スキップ",
+    "resultFailed": "失敗",
+    "resultConflict": "競合",
+    "resultReady": "準備完了"
   },
   "about": {
     "title": "スキルインポートについて",

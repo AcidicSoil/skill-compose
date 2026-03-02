@@ -1713,6 +1713,53 @@ class ImportSkillResponse(BaseModel):
     skipped_files: List[str] = []
 
 
+class BulkImportResultItem(BaseModel):
+    success: bool
+    skill_name: str
+    version: str = ""
+    message: str
+    status: str
+    conflict: bool = False
+    existing_skill: Optional[str] = None
+    existing_version: Optional[str] = None
+    skipped_files: List[str] = []
+
+
+class BulkImportResponse(BaseModel):
+    results: List[BulkImportResultItem]
+    total_imported: int
+    total_skipped: int
+    total_failed: int
+
+
+async def _overwrite_existing_skill_for_bulk_import(
+    skill_name: str,
+    db: AsyncSession,
+) -> None:
+    """Delete existing skill DB and disk state to allow a clean overwrite import."""
+    import shutil
+
+    service = SkillService(db)
+    existing = await service.skill_repo.get_by_name(skill_name)
+    if not existing:
+        return
+
+    deleted = await service.skill_repo.delete(existing.id)
+    if not deleted:
+        raise HTTPException(status_code=500, detail=f"Failed to delete existing skill '{skill_name}'")
+
+    skills_dir = Path(settings.custom_skills_dir).resolve()
+    skill_dir = skills_dir / skill_name
+    if skill_dir.exists():
+        try:
+            shutil.rmtree(skill_dir)
+        except Exception as e:
+            raise HTTPException(
+                status_code=500,
+                detail=f"Failed to remove existing files for overwrite of '{skill_name}': {e}",
+            )
+
+
 async def _do_skill_import(
     original_skill_name: str,
     skill_md_content: str,
@@ -2107,6 +2154,269 @@ async def import_skill(
         source=file.filename or "uploaded file",
         db=db,
         skipped_files=skipped_files,
+    )
+
+
+@router.post("/import-directory", response_model=BulkImportResponse)
+async def import_skill_from_directory(
+    files: List[UploadFile] = File(default=[], description="Files from a parent directory or sibling skill folders"),
+    check_only: bool = Query(False, description="Only check for conflicts, don't import"),
+    conflict_action: Optional[str] = Query(None, description="Action on conflict: skip, copy, overwrite"),
+    db: AsyncSession = Depends(get_db),
+):
+    """
+    Import multiple skills from a parent directory upload or sibling skill folders.
+    Supported layouts:
+    - parent/skill-a/SKILL.md
+    - parent/skill-b/SKILL.md
+    - skill-a/SKILL.md
+    - skill-b/SKILL.md
+    Only buckets containing a root-level SKILL.md are considered importable.
+    """
+    import json
+
+    if not files:
+        raise HTTPException(status_code=400, detail="No files provided")
+
+    normalized_files: list[tuple[list[str], bytes]] = []
+    for f in files:
+        if not f.filename:
+            continue
+
+        normalized = f.filename.replace("\\", "/")
+        parts = [part for part in normalized.split("/") if part]
+        if not parts:
+            continue
+
+        normalized_files.append((parts, await f.read()))
+
+    def _build_buckets(use_parent_prefix: bool) -> dict[str, dict[str, bytes]]:
+        buckets: dict[str, dict[str, bytes]] = {}
+
+        for parts, content in normalized_files:
+            if use_parent_prefix:
+                if len(parts) < 3:
+                    continue
+                skill_dir = parts[1]
+                rel_parts = parts[2:]
+            else:
+                if len(parts) < 2:
+                    continue
+                skill_dir = parts[0]
+                rel_parts = parts[1:]
+
+            rel_path = "/".join(rel_parts)
+            if not rel_path:
+                continue
+
+            if skill_dir not in buckets:
+                buckets[skill_dir] = {}
+
+            buckets[skill_dir][rel_path] = content
+
+        return buckets
+
+    def _bucket_score(candidate: dict[str, dict[str, bytes]]) -> tuple[int, int]:
+        root_skill_count = sum(
+            1
+            for file_map in candidate.values()
+            if any(path.upper() == "SKILL.MD" for path in file_map)
+        )
+        return root_skill_count, len(candidate)
+
+    parent_buckets = _build_buckets(use_parent_prefix=True)
+    sibling_buckets = _build_buckets(use_parent_prefix=False)
+    buckets = max((parent_buckets, sibling_buckets), key=_bucket_score)
+
+    if not buckets:
+        raise HTTPException(status_code=400, detail="No valid files found in directory")
+
+    _folder_skip_extensions = {
+        ".pyc", ".pyo", ".pyd", ".class",
+        ".o", ".a", ".so", ".dylib", ".dll", ".exe", ".wasm",
+    }
+
+    results: list[BulkImportResultItem] = []
+    total_imported = 0
+    total_skipped = 0
+    total_failed = 0
+
+    for skill_dir, file_map in buckets.items():
+        skill_md_content: Optional[str] = None
+        skill_md_key: Optional[str] = None
+
+        for key in file_map:
+            if key.upper() == "SKILL.MD":
+                skill_md_key = key
+                try:
+                    skill_md_content = file_map[key].decode("utf-8")
+                except UnicodeDecodeError:
+                    skill_md_content = None
+                break
+
+        if not skill_md_content:
+            results.append(BulkImportResultItem(
+                success=False,
+                skill_name=skill_dir,
+                version="",
+                message="Folder must contain a SKILL.md file at the root level",
+                status="failed",
+            ))
+            total_failed += 1
+            continue
+
+        original_skill_name = skill_dir
+        name_match = re.search(r'^name:\s*(.+)$', skill_md_content, re.MULTILINE)
+        if name_match:
+            original_skill_name = name_match.group(1).strip()
+
+        schema_json = None
+        if "schema.json" in file_map:
+            try:
+                schema_json = json.loads(file_map["schema.json"].decode("utf-8"))
+            except (json.JSONDecodeError, UnicodeDecodeError):
+                pass
+
+        manifest_json = None
+        if "manifest.json" in file_map:
+            try:
+                manifest_json = json.loads(file_map["manifest.json"].decode("utf-8"))
+            except (json.JSONDecodeError, UnicodeDecodeError):
+                pass
+
+        other_files: dict[str, tuple[bytes, str]] = {}
+        skipped_files: list[str] = []
+        excluded_files = {skill_md_key, "schema.json", "manifest.json"}
+
+        for rel_path, content in file_map.items():
+            if rel_path in excluded_files:
+                continue
+
+            basename = rel_path.rsplit("/", 1)[-1]
+            if basename.startswith(".") or basename.endswith(".pyc"):
+                continue
+            if "__pycache__" in rel_path:
+                continue
+            if ".backup" in basename or "UPDATE_REPORT" in basename:
+                continue
+
+            suffix = ('.' + basename.rsplit('.', 1)[-1]).lower() if '.' in basename else ''
+            if suffix in _folder_skip_extensions:
+                skipped_files.append(rel_path)
+                continue
+
+            file_type = "other"
+            if rel_path.startswith("scripts/"):
+                file_type = "script"
+            elif rel_path.startswith("references/"):
+                file_type = "reference"
+            elif rel_path.startswith("assets/"):
+                file_type = "asset"
+
+            other_files[rel_path] = (content, file_type)
+
+        try:
+            service = SkillService(db)
+            existing_skill = await service.skill_repo.get_by_name(original_skill_name)
+
+            if not check_only and existing_skill and conflict_action == "skip":
+                imported = ImportSkillResponse(
+                    success=False,
+                    skill_name=original_skill_name,
+                    version="",
+                    message=f"Skipped existing skill '{original_skill_name}'",
+                    conflict=True,
+                    existing_skill=original_skill_name,
+                    existing_version=existing_skill.current_version,
+                    skipped_files=skipped_files,
+                )
+            else:
+                if not check_only and existing_skill and conflict_action == "overwrite":
+                    await _overwrite_existing_skill_for_bulk_import(original_skill_name, db)
+
+                imported = await _do_skill_import(
+                    original_skill_name=original_skill_name,
+                    skill_md_content=skill_md_content,
+                    other_files=other_files,
+                    schema_json=schema_json,
+                    manifest_json=manifest_json,
+                    check_only=check_only,
+                    conflict_action="copy" if conflict_action == "copy" else None,
+                    source=f"directory: {skill_dir}",
+                    db=db,
+                    skipped_files=skipped_files,
+                )
+
+            if check_only:
+                status = "conflict" if imported.conflict else "ready"
+            else:
+                status = "imported"
+                if not imported.success and imported.conflict:
+                    status = "skipped"
+                elif not imported.success:
+                    status = "failed"
+
+            results.append(BulkImportResultItem(
+                success=imported.success,
+                skill_name=imported.skill_name,
+                version=imported.version,
+                message=imported.message,
+                status=status,
+                conflict=imported.conflict,
+                existing_skill=imported.existing_skill,
+                existing_version=imported.existing_version,
+                skipped_files=imported.skipped_files,
+            ))
+
+            if check_only:
+                if status == "conflict":
+                    total_skipped += 1
+            else:
+                if status == "imported":
+                    total_imported += 1
+                elif status == "skipped":
+                    total_skipped += 1
+                else:
+                    total_failed += 1
+
+        except HTTPException as e:
+            await db.rollback()
+            detail = e.detail if isinstance(e.detail, str) else str(e.detail)
+            if e.status_code == 409:
+                results.append(BulkImportResultItem(
+                    success=False,
+                    skill_name=original_skill_name,
+                    version="",
+                    message=detail,
+                    status="skipped",
+                    conflict=True,
+                ))
+                total_skipped += 1
+            else:
+                results.append(BulkImportResultItem(
+                    success=False,
+                    skill_name=original_skill_name,
+                    version="",
+                    message=detail,
+                    status="failed",
+                ))
+                total_failed += 1
+        except Exception as e:
+            await db.rollback()
+            results.append(BulkImportResultItem(
+                success=False,
+                skill_name=original_skill_name,
+                version="",
+                message=f"Import failed: {str(e)}",
+                status="failed",
+            ))
+            total_failed += 1
+
+    return BulkImportResponse(
+        results=results,
+        total_imported=total_imported,
+        total_skipped=total_skipped,
+        total_failed=total_failed,
     )
 
 

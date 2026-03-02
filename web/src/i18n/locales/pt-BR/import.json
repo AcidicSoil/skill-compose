@@ -44,6 +44,16 @@
       "notFolder": "Solte uma pasta, não um arquivo. Use a aba 'Enviar Arquivo' para arquivos .skill/.zip.",
       "noSkillMd": "A pasta deve conter um arquivo SKILL.md no nível raiz",
       "readFailed": "Falha ao ler o conteúdo da pasta"
+    },
+    "multi": {
+      "label": "Importação de múltiplos skills",
+      "detectedSkills": "{{count}} skill(s) detectado(s)"
+    },
+    "conflict": {
+      "label": "Estratégia de conflito",
+      "skip": "Ignorar existentes",
+      "copy": "Criar cópia",
+      "overwrite": "Substituir"
     }
   },
   "status": {
@@ -55,7 +65,15 @@
     "genericError": "Falha na importação",
     "githubError": "Falha na importação do GitHub",
     "skippedFiles": "{{count}} arquivo(s) ignorado(s) (tipos não suportados: artefatos compilados como .exe, .dll, .so)",
-    "skippedFilesList": "Ignorados: {{files}}"
+    "skippedFilesList": "Ignorados: {{files}}",
+    "bulkImported": "{{count}} importado(s)",
+    "bulkSkipped": "{{count}} ignorado(s)",
+    "bulkFailed": "{{count}} com falha",
+    "resultImported": "Importado",
+    "resultSkipped": "Ignorado",
+    "resultFailed": "Falhou",
+    "resultConflict": "Conflito",
+    "resultReady": "Pronto"
   },
   "about": {
     "title": "Sobre a Importação de Skills",

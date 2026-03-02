@@ -15,6 +15,7 @@ import os
 from dataclasses import dataclass, field
 from typing import Any, AsyncGenerator, Dict, Generator, List, Optional
 
+from app.config import get_settings
 from app.llm.models import get_context_limit
 
 
@@ -120,12 +121,19 @@ class LLMClient:
         env_var = key_map.get(provider, f"{provider.upper()}_API_KEY")
         return os.environ.get(env_var, "")
 
+    def _resolve_base_url(self) -> Optional[str]:
+        """Resolve base URL for OpenAI-compatible providers."""
+        if self.provider == "openai":
+            value = get_settings().openai_base_url.strip()
+            return value or None
+        return PROVIDER_BASE_URLS.get(self.provider)
+
     def _get_openai_client(self):
         """Get or create OpenAI client for OpenAI-compatible providers."""
         if self._client is None:
             from openai import OpenAI
             import httpx
-            base_url = PROVIDER_BASE_URLS.get(self.provider)
+            base_url = self._resolve_base_url()
 
             # Generous timeout for long streaming responses
             timeout = httpx.Timeout(600.0, connect=10.0)
@@ -161,7 +169,7 @@ class LLMClient:
         if self._async_client is None:
             from openai import AsyncOpenAI
             import httpx
-            base_url = PROVIDER_BASE_URLS.get(self.provider)
+            base_url = self._resolve_base_url()
             timeout = httpx.Timeout(600.0, connect=10.0)
 
             if self.provider == "openrouter":

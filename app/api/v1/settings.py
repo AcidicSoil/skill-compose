@@ -242,6 +242,7 @@ async def create_env_variable(create: EnvVariableCreate):
 
     # Update runtime environment
     os.environ[create.key] = create.value
+    get_settings.cache_clear()
 
     return {"success": True, "key": create.key, "message": f"Created {create.key}"}
 
@@ -272,6 +273,7 @@ async def update_env_variable(update: EnvVariableUpdate):
 
     # Update runtime environment
     os.environ[update.key] = update.value
+    get_settings.cache_clear()
 
     return {"success": True, "key": update.key, "message": f"Updated {update.key}"}
 
@@ -301,6 +303,7 @@ async def delete_env_variable(key: str):
     # Remove from runtime environment
     if key in os.environ:
         del os.environ[key]
+    get_settings.cache_clear()
 
     return {"success": True, "key": key, "message": f"Deleted {key}"}
 
@@ -322,5 +325,6 @@ async def update_env_variables_batch(updates: list[EnvVariableUpdate]):
         os.environ[update.key] = update.value
 
     _write_env_file(current_values)
+    get_settings.cache_clear()
 
     return {"success": True, "updated_count": len(updates)}
