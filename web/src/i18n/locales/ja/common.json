@@ -122,7 +122,6 @@
     "environment": "環境変数",
     "toggleTheme": "テーマ切替",
     "language": "言語",
-    "terminal": "ターミナル",
-    "discord": "Discordコミュニティ"
+    "terminal": "ターミナル"
   }
 }

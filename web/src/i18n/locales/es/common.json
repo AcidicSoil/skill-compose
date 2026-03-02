@@ -122,7 +122,6 @@
     "environment": "Entorno",
     "toggleTheme": "Cambiar tema",
     "language": "Idioma",
-    "terminal": "Terminal",
-    "discord": "Comunidad Discord"
+    "terminal": "Terminal"
   }
 }
