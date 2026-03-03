@@ -13,9 +13,12 @@
     "terminal": "Terminal",
     "sessions": "Sessions",
     "more": "More",
+<<<<<<< HEAD
     "accounts": "Accounts",
     "scheduledTasks": "Scheduled Tasks",
     "channels": "Channels",
+=======
+>>>>>>> feat/spec-tree-plan
     "groupMonitor": "Monitor",
     "groupSystem": "System"
   },

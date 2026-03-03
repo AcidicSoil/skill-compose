@@ -828,7 +828,11 @@ const AGENT_API_BASE = BACKEND_API_BASE;
 
 // Stream event types
 export interface StreamEvent {
+<<<<<<< HEAD
   event_type: 'run_started' | 'turn_start' | 'text_delta' | 'assistant' | 'tool_call' | 'tool_result' | 'output_file' | 'complete' | 'error' | 'trace_saved' | 'steering_received' | 'ask_user';
+=======
+  event_type: 'run_started' | 'turn_start' | 'text_delta' | 'assistant' | 'tool_call' | 'tool_result' | 'output_file' | 'complete' | 'error' | 'trace_saved' | 'steering_received';
+>>>>>>> feat/spec-tree-plan
   turn: number;
   // For turn_start
   max_turns?: number;
@@ -960,7 +964,11 @@ export const agentApi = {
   },
 
   steerAgent: async (traceId: string, message: string): Promise<void> => {
+<<<<<<< HEAD
     const response = await authedFetch(
+=======
+    const response = await fetch(
+>>>>>>> feat/spec-tree-plan
       `${AGENT_API_BASE}/agent/run/stream/${encodeURIComponent(traceId)}/steer`,
       {
         method: 'POST',
@@ -970,12 +978,20 @@ export const agentApi = {
     );
     if (!response.ok) {
       const error = await response.json().catch(() => ({}));
+<<<<<<< HEAD
       throw new ApiError(response.status, error.detail || `Steer failed: ${response.statusText}`);
+=======
+      throw new Error(error.detail || `Steer failed: ${response.statusText}`);
+>>>>>>> feat/spec-tree-plan
     }
   },
 
   getSession: async (sessionId: string): Promise<SessionMessages> => {
+<<<<<<< HEAD
     const response = await authedFetch(
+=======
+    const response = await fetch(
+>>>>>>> feat/spec-tree-plan
       `${AGENT_API_BASE}/published/sessions/${encodeURIComponent(sessionId)}/detail`
     );
     if (!response.ok) {
@@ -983,6 +999,7 @@ export const agentApi = {
     }
     return response.json();
   },
+<<<<<<< HEAD
 
   getSessionTraceIds: async (sessionId: string): Promise<string[]> => {
     const response = await authedFetch(
@@ -994,6 +1011,8 @@ export const agentApi = {
     const data = await response.json();
     return data.trace_ids || [];
   },
+=======
+>>>>>>> feat/spec-tree-plan
 };
 
 // Traces API
@@ -1523,7 +1542,11 @@ export const publishedAgentApi = {
   },
 
   steerAgent: async (agentId: string, traceId: string, message: string): Promise<void> => {
+<<<<<<< HEAD
     const response = await authedFetch(
+=======
+    const response = await fetch(
+>>>>>>> feat/spec-tree-plan
       `${PUBLISHED_API_BASE}/published/${encodeURIComponent(agentId)}/chat/${encodeURIComponent(traceId)}/steer`,
       {
         method: 'POST',
@@ -1533,7 +1556,11 @@ export const publishedAgentApi = {
     );
     if (!response.ok) {
       const error = await response.json().catch(() => ({}));
+<<<<<<< HEAD
       throw new ApiError(response.status, error.detail || `Steer failed: ${response.statusText}`);
+=======
+      throw new Error(error.detail || `Steer failed: ${response.statusText}`);
+>>>>>>> feat/spec-tree-plan
     }
   },
 
@@ -1909,7 +1936,11 @@ export interface EnvConfigResponse {
 
 export const settingsApi = {
   getEnv: async (): Promise<EnvConfigResponse> => {
+<<<<<<< HEAD
     const response = await authedFetch(`${BACKEND_API_BASE}/settings/env`);
+=======
+    const response = await fetch(`${BACKEND_API_BASE}/settings/env`);
+>>>>>>> feat/spec-tree-plan
     if (!response.ok) {
       throw new ApiError(response.status, 'Failed to load environment variables');
     }
@@ -1917,7 +1948,11 @@ export const settingsApi = {
   },
 
   createEnv: async (key: string, value: string): Promise<void> => {
+<<<<<<< HEAD
     const response = await authedFetch(`${BACKEND_API_BASE}/settings/env`, {
+=======
+    const response = await fetch(`${BACKEND_API_BASE}/settings/env`, {
+>>>>>>> feat/spec-tree-plan
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ key, value }),
@@ -1929,7 +1964,11 @@ export const settingsApi = {
   },
 
   updateEnv: async (key: string, value: string): Promise<void> => {
+<<<<<<< HEAD
     const response = await authedFetch(`${BACKEND_API_BASE}/settings/env`, {
+=======
+    const response = await fetch(`${BACKEND_API_BASE}/settings/env`, {
+>>>>>>> feat/spec-tree-plan
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ key, value }),
@@ -1941,7 +1980,11 @@ export const settingsApi = {
   },
 
   deleteEnv: async (key: string): Promise<void> => {
+<<<<<<< HEAD
     const response = await authedFetch(`${BACKEND_API_BASE}/settings/env/${encodeURIComponent(key)}`, {
+=======
+    const response = await fetch(`${BACKEND_API_BASE}/settings/env/${encodeURIComponent(key)}`, {
+>>>>>>> feat/spec-tree-plan
       method: 'DELETE',
     });
     if (!response.ok) {
@@ -1951,6 +1994,7 @@ export const settingsApi = {
   },
 };
 
+<<<<<<< HEAD
 // Auth API
 const AUTH_API_BASE = BACKEND_API_BASE;
 
@@ -2559,3 +2603,6 @@ export const memoryApi = {
     return response.json();
   },
 };
+=======
+export { ApiError };
+>>>>>>> feat/spec-tree-plan

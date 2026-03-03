@@ -31,7 +31,11 @@ function StatCard({ value, label, href, isLoading }: { value: number; label: str
 }
 
 const QUICK_ACTIONS = [
+<<<<<<< HEAD
   { href: '/skills/find', icon: Search, titleKey: 'quickActions.findSkills.title', descKey: 'quickActions.findSkills.description', accent: 'from-blue-500 to-cyan-500' },
+=======
+  { href: '/skills', icon: Sparkles, titleKey: 'quickActions.browseSkills.title', descKey: 'quickActions.browseSkills.description', accent: 'from-blue-500 to-cyan-500' },
+>>>>>>> feat/spec-tree-plan
   { href: '/skills/new', icon: Plus, titleKey: 'quickActions.createSkill.title', descKey: 'quickActions.createSkill.description', accent: 'from-violet-500 to-purple-500' },
   { href: '/import', icon: Download, titleKey: 'quickActions.importSkill.title', descKey: 'quickActions.importSkill.description', accent: 'from-emerald-500 to-teal-500' },
   { href: '/skills/evolve', icon: Zap, titleKey: 'quickActions.evolveSkills.title', descKey: 'quickActions.evolveSkills.description', accent: 'from-amber-500 to-orange-500' },
@@ -69,15 +73,26 @@ export default function Home() {
           <div className="relative container px-4 pt-12 pb-8 md:pt-16 md:pb-10">
             <div className="mx-auto max-w-3xl">
               <h1 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl leading-[1.15] [text-wrap:balance]">
+<<<<<<< HEAD
                 {t('title')}
               </h1>
               <p className="mt-4 text-lg text-muted-foreground sm:text-xl [text-wrap:balance]">
+=======
+                {t('title_line1')}<br />
+                <span className="gradient-text">{t('title_line2')}</span>
+              </h1>
+              <p className="mt-4 text-lg tracking-wide text-muted-foreground italic sm:text-xl">
+>>>>>>> feat/spec-tree-plan
                 {t('tagline')}
               </p>
               <div className="mt-8 inline-flex flex-col items-center gap-1">
                 <Link
                   href="/agents/new"
+<<<<<<< HEAD
                   className="inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-blue-600 to-violet-600 dark:from-blue-500 dark:to-violet-500 px-8 py-3.5 text-base font-semibold text-white shadow-md shadow-blue-500/20 transition-[transform,box-shadow] hover:shadow-lg hover:shadow-violet-500/30 hover:scale-[1.02] motion-reduce:transform-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+=======
+                  className="inline-flex items-center justify-center rounded-lg bg-primary px-8 py-3.5 text-base font-semibold text-primary-foreground shadow-md shadow-primary/20 transition-[transform,box-shadow] hover:shadow-lg hover:shadow-primary/30 hover:scale-[1.02] motion-reduce:transform-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+>>>>>>> feat/spec-tree-plan
                 >
                   {t('cta.main')} <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>

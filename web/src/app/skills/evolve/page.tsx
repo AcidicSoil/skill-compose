@@ -91,6 +91,7 @@ export default function SkillEvolvePage() {
   // Refs
   const initialMessageSentRef = useRef(false);
 
+<<<<<<< HEAD
   // Stable refs for engine callbacks (avoid stale closures)
   const sessionIdRef = useRef(sessionId);
   sessionIdRef.current = sessionId;
@@ -104,6 +105,11 @@ export default function SkillEvolvePage() {
   selectedAgentRef.current = selectedAgent;
 
   const hasTargets = selectedSkills.length > 0 || selectedAgent !== null;
+=======
+  // Session ID for server-side session management (new per evolve chat)
+  const [sessionId, setEvolveSessionId] = useState(() => crypto.randomUUID());
+
+>>>>>>> feat/spec-tree-plan
   const hasTraces = selectedTraceIds.size > 0;
   const hasFeedback = feedback.trim().length > 0;
   const hasEvidence = hasTraces || hasFeedback;
@@ -328,6 +334,22 @@ export default function SkillEvolvePage() {
     }
   };
 
+<<<<<<< HEAD
+=======
+  const addMessage = useCallback((msg: LocalMessage) => {
+    setMessages((prev) => [...prev, msg]);
+  }, []);
+
+  const updateMessage = useCallback(
+    (id: string, updates: Partial<LocalMessage>) => {
+      setMessages((prev) =>
+        prev.map((msg) => (msg.id === id ? { ...msg, ...updates } : msg))
+      );
+    },
+    []
+  );
+
+>>>>>>> feat/spec-tree-plan
   const handleStartChat = async () => {
     setAgentLoadError(null);
     try {
@@ -349,6 +371,7 @@ export default function SkillEvolvePage() {
     setEvolutionComplete(false);
     setSyncResults([]);
     initialMessageSentRef.current = false;
+<<<<<<< HEAD
   };
 
   const handleNewChat = useCallback(() => {
@@ -413,6 +436,10 @@ export default function SkillEvolvePage() {
     } catch {
       setAgentLoadError(t("evolve.agentNotFound"));
     }
+=======
+    setAgentPreset(null);
+    setEvolveSessionId(crypto.randomUUID());
+>>>>>>> feat/spec-tree-plan
   };
 
   const buildInitialMessageText = (): string => {
@@ -452,11 +479,158 @@ export default function SkillEvolvePage() {
     return parts.join("\n");
   };
 
+<<<<<<< HEAD
   // Build chat header label
   const chatHeaderLabel = useMemo(() => {
     const parts: string[] = [];
     if (selectedSkills.length > 0) {
       parts.push(selectedSkills.join(", "));
+=======
+  const sendMessage = async (
+    messageText: string,
+    isInitial: boolean = false
+  ) => {
+    if (!agentPreset) return;
+
+    const abortController = new AbortController();
+    abortControllerRef.current = abortController;
+
+    const userMessage: LocalMessage = {
+      id: Date.now().toString(),
+      role: "user",
+      content: messageText,
+      timestamp: Date.now(),
+    };
+
+    const loadingMessageId = (Date.now() + 1).toString();
+    const loadingMessage: LocalMessage = {
+      id: loadingMessageId,
+      role: "assistant",
+      content: "",
+      timestamp: Date.now(),
+      isLoading: true,
+    };
+
+    addMessage(userMessage);
+    addMessage(loadingMessage);
+    setIsRunning(true);
+    setStreamingMessageId(loadingMessageId);
+    setStreamingContent("");
+    setStreamingEvents([]);
+    setCurrentOutputFiles([]);
+
+    try {
+
+      const events: StreamEventRecord[] = [];
+      let finalAnswer = "";
+      let traceId: string | undefined;
+      let hasError = false;
+      let errorMessage = "";
+      let isComplete = false;
+      const outputFiles: OutputFileInfo[] = [];
+
+      await agentApi.runStream(
+        {
+          request: messageText,
+          session_id: sessionId,
+          agent_id: agentPreset.id,
+        },
+        (event: StreamEvent) => {
+          handleStreamEvent(event, events);
+
+          switch (event.event_type) {
+            case "run_started":
+              traceId = event.trace_id;
+              flushSync(() => {
+                updateMessage(loadingMessageId, { traceId });
+              });
+              break;
+            case "complete":
+              if (isComplete) break;
+              isComplete = true;
+              finalAnswer = event.answer || "";
+              break;
+            case "error":
+              hasError = true;
+              errorMessage =
+                event.message || event.error || "Unknown error";
+              break;
+            case "trace_saved":
+              traceId = event.trace_id;
+              break;
+            case "output_file":
+              if (event.file_id && event.filename && event.download_url) {
+                const fileInfo: OutputFileInfo = {
+                  file_id: event.file_id,
+                  filename: event.filename,
+                  size: event.size || 0,
+                  content_type:
+                    event.content_type || "application/octet-stream",
+                  download_url: event.download_url,
+                  description: event.description,
+                };
+                outputFiles.push(fileInfo);
+                flushSync(() => {
+                  setCurrentOutputFiles([...outputFiles]);
+                });
+              }
+              break;
+          }
+
+          flushSync(() => {
+            setStreamingEvents([...events]);
+            setStreamingContent(serializeEventsToText(events));
+          });
+        },
+        abortController.signal
+      );
+
+      updateMessage(loadingMessageId, {
+        content: serializeEventsToText(events),
+        streamEvents: events,
+        rawAnswer: finalAnswer || undefined,
+        isLoading: false,
+        traceId,
+        error: hasError ? errorMessage : undefined,
+        outputFiles: outputFiles.length > 0 ? outputFiles : undefined,
+      });
+
+      // After completion, try to sync filesystem to create a new DB version
+      if (isComplete && !hasError) {
+        try {
+          const sync = await skillsApi.syncFilesystem(selectedSkill);
+          if (sync.synced) {
+            setSyncResult(sync);
+            setEvolutionComplete(true);
+            toast.success(
+              t("evolve.evolutionComplete")
+            );
+          }
+        } catch {
+          // Sync failure is non-fatal
+        }
+      }
+    } catch (err) {
+      if (err instanceof Error && err.name === "AbortError") {
+        // Remove loading message on abort
+        setMessages((prev) =>
+          prev.filter((m) => m.id !== loadingMessageId)
+        );
+        return;
+      }
+      updateMessage(loadingMessageId, {
+        content: t("evolve.failedToRunAgent"),
+        isLoading: false,
+        error: err instanceof Error ? err.message : tc("errors.generic"),
+      });
+    } finally {
+      setIsRunning(false);
+      setStreamingMessageId(null);
+      setStreamingContent(null);
+      setStreamingEvents([]);
+      setCurrentOutputFiles([]);
+      abortControllerRef.current = null;
+>>>>>>> feat/spec-tree-plan
     }
     if (selectedAgent) {
       parts.push(selectedAgent.name);
@@ -584,6 +758,7 @@ export default function SkillEvolvePage() {
                 </div>
               )}
             </div>
+<<<<<<< HEAD
 
             {/* Agent single-select */}
             <div>
@@ -641,6 +816,15 @@ export default function SkillEvolvePage() {
           {!hasTargets && (
             <p className="text-xs text-amber-600 dark:text-amber-400 mt-3">
               {t("evolve.targetsHint")}
+=======
+          ) : userSkills.length === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              {t("evolve.noUserSkills")}{" "}
+              <Link href="/skills/new" className="text-primary underline">
+                {t("evolve.createOneFirst")}
+              </Link>
+              .
+>>>>>>> feat/spec-tree-plan
             </p>
           )}
         </div>
@@ -859,6 +1043,7 @@ export default function SkillEvolvePage() {
               {t("evolve.evolving")}: {chatHeaderLabel}
             </h1>
           </div>
+<<<<<<< HEAD
           <div className="flex gap-2">
             {selectedSkills.length > 0 && (
               <Link href={`/skills/${encodeURIComponent(selectedSkills[0])}`} target="_blank">
@@ -996,6 +1181,67 @@ export default function SkillEvolvePage() {
                 </Button>
               )}
             </div>
+=======
+        ) : (
+          messages.map((message) => (
+            <div key={message.id} className="max-w-4xl mx-auto">
+              <ChatMessageItem
+                message={message}
+                streamingContent={
+                  message.id === streamingMessageId
+                    ? streamingContent
+                    : null
+                }
+                streamingEvents={
+                  message.id === streamingMessageId
+                    ? streamingEvents
+                    : undefined
+                }
+                streamingOutputFiles={
+                  message.id === streamingMessageId
+                    ? currentOutputFiles
+                    : undefined
+                }
+              />
+            </div>
+          ))
+        )}
+        <div ref={messagesEndRef} />
+      </div>
+
+      {/* Input */}
+      <div className="border-t px-6 py-4 shrink-0">
+        <div className="max-w-4xl mx-auto">
+          <div className="flex gap-2">
+            <Textarea
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder={t("evolve.guidePlaceholder")}
+              className="min-h-[60px] resize-none"
+              disabled={isRunning}
+            />
+          </div>
+          <div className="flex justify-between items-center mt-2">
+            <span className="text-xs text-muted-foreground">
+              {t("evolve.enterToSend")}
+            </span>
+            {isRunning ? (
+              <Button onClick={handleStop} variant="destructive" size="sm">
+                <Square className="h-4 w-4 mr-1" />
+                {tc("actions.stop")}
+              </Button>
+            ) : (
+              <Button
+                onClick={handleSubmit}
+                disabled={!input.trim()}
+                size="sm"
+              >
+                <Send className="h-4 w-4 mr-1" />
+                {t("evolve.send")}
+              </Button>
+            )}
+>>>>>>> feat/spec-tree-plan
           </div>
         </div>
       </div>

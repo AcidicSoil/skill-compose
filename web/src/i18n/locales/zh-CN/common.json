@@ -13,9 +13,12 @@
     "terminal": "终端",
     "sessions": "会话",
     "more": "更多",
+<<<<<<< HEAD
     "accounts": "账户管理",
     "scheduledTasks": "定时任务",
     "channels": "消息渠道",
+=======
+>>>>>>> feat/spec-tree-plan
     "groupMonitor": "监控",
     "groupSystem": "系统"
   },

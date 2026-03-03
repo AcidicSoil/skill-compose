@@ -23,7 +23,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.agent.agent import StreamEvent
 from app.agent.event_stream import EventStream
+<<<<<<< HEAD
 from app.api.v1.sessions import SessionData
+=======
+>>>>>>> feat/spec-tree-plan
 from app.db.models import AgentPresetDB, AgentTraceDB, PublishedSessionDB
 
 API = "/api/v1/published"
@@ -274,19 +277,30 @@ class TestPublishedChat:
         assert resp.status_code == 404
 
     @patch("app.api.v1.published.save_session_messages", new_callable=AsyncMock)
+<<<<<<< HEAD
     @patch("app.api.v1.published.save_session_checkpoint", new_callable=AsyncMock)
     @patch("app.api.v1.published.pre_compress_if_needed", new_callable=AsyncMock, return_value=[])
+=======
+>>>>>>> feat/spec-tree-plan
     @patch("app.api.v1.published.load_or_create_session", new_callable=AsyncMock)
     @patch("app.api.v1.published.SkillsAgent")
     @patch("app.api.v1.published.AsyncSessionLocal")
     async def test_chat_creates_session(
+<<<<<<< HEAD
         self, MockSL, MockAgent, MockLoadSession, _mock_pre_compress, _mock_checkpoint, _mock_save, client: AsyncClient
+=======
+        self, MockSL, MockAgent, MockLoadSession, _mock_save, client: AsyncClient
+>>>>>>> feat/spec-tree-plan
     ):
         """Chatting with a valid published agent returns SSE stream."""
         preset = _make_preset(published=True)
         preset.model_provider = None
         preset.model_name = None
+<<<<<<< HEAD
         preset.executor_name = None
+=======
+        preset.executor_id = None
+>>>>>>> feat/spec-tree-plan
 
         # Mock agent
         MockAgent.return_value = _make_mock_agent_instance()
@@ -319,7 +333,11 @@ class TestPublishedChat:
         MockSL.side_effect = lambda: _ctx()
 
         session_id = str(uuid.uuid4())
+<<<<<<< HEAD
         MockLoadSession.return_value = SessionData(session_id=session_id)
+=======
+        MockLoadSession.return_value = (session_id, None)
+>>>>>>> feat/spec-tree-plan
         resp = await client.post(
             f"{API}/{preset.id}/chat",
             json={"request": "hello", "session_id": session_id},

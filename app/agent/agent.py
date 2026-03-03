@@ -22,14 +22,22 @@ import os
 import re
 import uuid
 from datetime import datetime
+<<<<<<< HEAD
 from pathlib import Path
 from typing import Any, Callable, Dict, Generator, List, Optional, Tuple, TYPE_CHECKING
+=======
+from typing import Any, Dict, Generator, List, Optional, TYPE_CHECKING
+>>>>>>> feat/spec-tree-plan
 from dataclasses import dataclass, field, asdict
 
 logger = logging.getLogger(__name__)
 
 from app.config import settings
+<<<<<<< HEAD
 from app.agent.tools import TOOLS, call_tool, acall_tool, get_tools_for_agent, BASE_TOOLS, META_TOOLS, get_mcp_client, _SKILLS_DIR
+=======
+from app.agent.tools import TOOLS, call_tool, acall_tool, get_tools_for_agent, BASE_TOOLS, get_mcp_client, WORKING_DIR
+>>>>>>> feat/spec-tree-plan
 from app.core.tools_registry import get_all_tools, get_tools_by_ids, tools_to_claude_format
 from app.llm import LLMClient, LLMTextBlock, LLMToolCall
 from app.llm.models import MODEL_CONTEXT_LIMITS, DEFAULT_CONTEXT_LIMIT, get_context_limit
@@ -1006,6 +1014,49 @@ class SkillsAgent:
         """Serialize messages into readable text for summarization. Delegates to module-level function."""
         return _serialize_messages_for_summary(messages)
 
+<<<<<<< HEAD
+=======
+        Truncates tool_use inputs to 500 chars and tool_results to 1000 chars.
+        If total text exceeds 100K chars, takes first and last halves with a truncation marker.
+        """
+        parts = []
+        for msg in messages:
+            role = msg.get("role", "unknown")
+            content = msg.get("content", "")
+
+            if isinstance(content, str):
+                parts.append(f"[{role}]: {content}")
+            elif isinstance(content, list):
+                for block in content:
+                    if isinstance(block, dict):
+                        block_type = block.get("type", "")
+                        if block_type == "text":
+                            parts.append(f"[{role}]: {block.get('text', '')}")
+                        elif block_type == "tool_use":
+                            tool_name = block.get("name", "unknown")
+                            tool_input = json.dumps(block.get("input", {}), ensure_ascii=False)
+                            if len(tool_input) > 500:
+                                tool_input = tool_input[:500] + "...(truncated)"
+                            parts.append(f"[{role} -> tool_use({tool_name})]: {tool_input}")
+                        elif block_type == "tool_result":
+                            tool_content = block.get("content", "")
+                            if isinstance(tool_content, str) and len(tool_content) > 1000:
+                                tool_content = tool_content[:1000] + "...(truncated)"
+                            parts.append(f"[tool_result]: {tool_content}")
+                    elif isinstance(block, str):
+                        parts.append(f"[{role}]: {block}")
+
+        text = "\n\n".join(parts)
+
+        # If total text exceeds 100K characters, take head + tail
+        max_chars = 100_000
+        if len(text) > max_chars:
+            half = max_chars // 2
+            text = text[:half] + "\n\n[... truncated middle section ...]\n\n" + text[-half:]
+
+        return text
+
+>>>>>>> feat/spec-tree-plan
     async def _compress_messages(self, messages: List[Dict]) -> tuple:
         """Compress old messages into a structured summary, keeping recent turns.
 
@@ -1174,6 +1225,7 @@ class SkillsAgent:
         summary_input_tokens = 0
         summary_output_tokens = 0
         try:
+<<<<<<< HEAD
             if has_previous_summary and previous_summary_text:
                 # Iterative: update existing summary with new messages
                 new_messages_only = [m for m in old_messages[1:] if not (
@@ -1197,6 +1249,8 @@ class SkillsAgent:
                 system_prompt = SUMMARY_SYSTEM_PROMPT.format(file_tracking_section=file_tracking)
                 user_content = f"Please summarize the following conversation:\n\n{serialized}"
 
+=======
+>>>>>>> feat/spec-tree-plan
             summary_response = await self.client.acreate(
                 messages=[{
                     "role": "user",
@@ -1395,7 +1449,11 @@ class SkillsAgent:
                         messages=messages,
                         system=self.system_prompt,
                         tools=self.tools,
+<<<<<<< HEAD
                         max_tokens=min(self.client.max_output_tokens, 32000),
+=======
+                        max_tokens=16384,
+>>>>>>> feat/spec-tree-plan
                     ):
                         # Check cancellation during streaming
                         if cancellation_event and cancellation_event.is_set():
@@ -1415,6 +1473,7 @@ class SkillsAgent:
                     if self.verbose:
                         print(f"\n[Stream Error] {stream_err}")
                     if self._is_retryable_error(stream_err):
+<<<<<<< HEAD
                         # Retry with exponential backoff (up to 3 attempts)
                         for attempt in range(1, 4):
                             delay = 2 ** attempt  # 2s, 4s, 8s
@@ -1456,6 +1515,29 @@ class SkillsAgent:
                             if self.verbose:
                                 print(f"\n[LLM Error] Non-retryable: {call_err}")
                             break
+=======
+                        if self.verbose:
+                            print(f"[Stream Retry] Retrying with non-streaming call after 2s...")
+                        await asyncio.sleep(2)
+                        try:
+                            response = await self.client.acreate(
+                                messages=messages,
+                                system=self.system_prompt,
+                                tools=self.tools,
+                                max_tokens=16384,
+                            )
+                        except Exception as retry_err:
+                            if self.verbose:
+                                print(f"[Stream Retry] Retry also failed: {retry_err}")
+            else:
+                # Non-streaming: single call
+                response = await self.client.acreate(
+                    messages=messages,
+                    system=self.system_prompt,
+                    tools=self.tools,
+                    max_tokens=16384,
+                )
+>>>>>>> feat/spec-tree-plan
 
             # Check cancellation after LLM call
             if cancellation_event and cancellation_event.is_set():
@@ -1613,13 +1695,25 @@ class SkillsAgent:
                 if event_stream and event_stream.has_injection():
                     steering_msg = event_stream.get_injection_nowait()
                     if steering_msg:
+<<<<<<< HEAD
                         await event_stream.push(_make_steering_event(turns, steering_msg))
+=======
+>>>>>>> feat/spec-tree-plan
                         messages.append({
                             "role": "user",
                             "content": f"[User Steering Message]: {steering_msg}"
                         })
+<<<<<<< HEAD
                         # Grant an extra turn so the LLM can process this steering
                         self.max_turns = max(self.max_turns, turns + 1)
+=======
+                        if streaming:
+                            await event_stream.push(StreamEvent(
+                                event_type="steering_received",
+                                turn=turns,
+                                data={"message": steering_msg}
+                            ))
+>>>>>>> feat/spec-tree-plan
                         continue  # Don't finish, loop back to LLM with steering message
 
                 final_answer = response.text_content
@@ -1668,6 +1762,7 @@ class SkillsAgent:
 
                 tool_name = tool_call["name"]
 
+<<<<<<< HEAD
                 if self.verbose:
                     print(f"\nTool: {tool_name}")
                     print(f"Input: {json.dumps(tool_call['input'], ensure_ascii=False)[:3000]}")
@@ -1791,6 +1886,35 @@ class SkillsAgent:
                     "type": "tool_result",
                     "tool_use_id": tool_call["id"],
                     "content": tool_result,
+=======
+                if self.verbose:
+                    print(f"\nTool: {tool_name}")
+                    print(f"Input: {json.dumps(tool_call['input'], ensure_ascii=False)[:3000]}")
+
+                tool_result = await acall_tool(
+                    tool_name,
+                    tool_call["input"],
+                    allowed_skills=self.allowed_skills,
+                    tool_functions=self.tool_functions
+                )
+
+                # Track actually used skills
+                if tool_name == "get_skill" and tool_call["input"].get("skill_name"):
+                    used_skills.add(tool_call["input"]["skill_name"])
+
+                if self.verbose:
+                    print(f"Result: {tool_result[:3000]}")
+                    if len(tool_result) > 3000:
+                        print('...(truncated)')
+
+                # Truncate tool result for LLM context (preserve full result for logs/steps)
+                llm_result = truncate_tool_result(tool_name, tool_result)
+
+                tool_results.append({
+                    "type": "tool_result",
+                    "tool_use_id": tool_call["id"],
+                    "content": llm_result,
+>>>>>>> feat/spec-tree-plan
                 })
 
                 steps.append(AgentStep(
@@ -1850,11 +1974,15 @@ class SkillsAgent:
             if event_stream and event_stream.has_injection():
                 steering_msg = event_stream.get_injection_nowait()
                 if steering_msg:
+<<<<<<< HEAD
                     await event_stream.push(_make_steering_event(turns, steering_msg))
+=======
+>>>>>>> feat/spec-tree-plan
                     messages.append({
                         "role": "user",
                         "content": f"[User Steering Message]: {steering_msg}"
                     })
+<<<<<<< HEAD
                     # Grant an extra turn so the LLM can process this steering
                     self.max_turns = max(self.max_turns, turns + 1)
 
@@ -1871,6 +1999,20 @@ class SkillsAgent:
         # Determine if cancelled
         was_cancelled = cancellation_event and cancellation_event.is_set()
 
+=======
+                    if streaming:
+                        await event_stream.push(StreamEvent(
+                            event_type="steering_received",
+                            turn=turns,
+                            data={"message": steering_msg}
+                        ))
+
+        # Exited the loop — either max turns or cancellation
+
+        # Determine if cancelled
+        was_cancelled = cancellation_event and cancellation_event.is_set()
+
+>>>>>>> feat/spec-tree-plan
         if was_cancelled:
             final_answer = "Agent execution was cancelled."
             error_msg = "cancelled"

@@ -366,9 +366,12 @@ class AgentTraceDB(Base):
     executor_name: Mapped[Optional[str]] = mapped_column(
         String(64), nullable=True
     )  # Executor used (e.g., "remotion", "base", None for local)
+<<<<<<< HEAD
     session_id: Mapped[Optional[str]] = mapped_column(
         String(36), nullable=True
     )  # Session ID linking this trace to a chat session
+=======
+>>>>>>> feat/spec-tree-plan
 
     __table_args__ = (
         Index("ix_agent_traces_created_at", "created_at"),

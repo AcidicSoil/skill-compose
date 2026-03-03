@@ -44,6 +44,16 @@
       "notFolder": "请拖放文件夹而非文件。如需上传 .skill/.zip 文件，请使用「上传文件」标签页。",
       "noSkillMd": "文件夹根目录必须包含 SKILL.md 文件",
       "readFailed": "读取文件夹内容失败"
+    },
+    "multi": {
+      "label": "多技能导入",
+      "detectedSkills": "检测到 {{count}} 个技能"
+    },
+    "conflict": {
+      "label": "冲突策略",
+      "skip": "跳过已有",
+      "copy": "创建副本",
+      "overwrite": "覆盖"
     }
   },
   "status": {
@@ -55,7 +65,15 @@
     "genericError": "导入失败",
     "githubError": "GitHub 导入失败",
     "skippedFiles": "{{count}} 个文件被跳过（不支持的类型：.exe、.dll、.so 等编译产物）",
-    "skippedFilesList": "已跳过：{{files}}"
+    "skippedFilesList": "已跳过：{{files}}",
+    "bulkImported": "已导入 {{count}} 个",
+    "bulkSkipped": "已跳过 {{count}} 个",
+    "bulkFailed": "失败 {{count}} 个",
+    "resultImported": "已导入",
+    "resultSkipped": "已跳过",
+    "resultFailed": "失败",
+    "resultConflict": "冲突",
+    "resultReady": "就绪"
   },
   "about": {
     "title": "关于技能导入",

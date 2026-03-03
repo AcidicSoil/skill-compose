@@ -45,6 +45,7 @@ export function AgentBuilderChat({
   const [selectedModelProvider, setSelectedModelProvider] = useState<string | null>('kimi');
   const [selectedModelName, setSelectedModelName] = useState<string | null>('kimi-k2.5');
 
+<<<<<<< HEAD
   // Stable refs
   const sessionIdRef = useRef(sessionId);
   sessionIdRef.current = sessionId;
@@ -54,6 +55,32 @@ export function AgentBuilderChat({
   uploadedFilesRef.current = uploadedFiles;
   const messagesRef = useRef(messages);
   messagesRef.current = messages;
+=======
+  // Session ID for server-side session management
+  const [sessionId] = useState(() => crypto.randomUUID());
+
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  // For stop functionality
+  const abortControllerRef = useRef<AbortController | null>(null);
+  const currentRequestMessagesRef = useRef<string[]>([]);
+
+  // Fetch agent-builder preset ID
+  useEffect(() => {
+    const fetchAgentBuilder = async () => {
+      try {
+        setLoadError(null);
+        const preset = await agentPresetsApi.getByName('agent-builder');
+        setAgentBuilderId(preset.id);
+      } catch (error) {
+        console.error('Failed to fetch agent-builder:', error);
+        setLoadError(error instanceof Error ? error.message : 'Failed to load agent-builder preset');
+      }
+    };
+    fetchAgentBuilder();
+  }, []);
+>>>>>>> feat/spec-tree-plan
 
   // Fetch available models
   const { data: modelsData } = useQuery({
@@ -67,14 +94,19 @@ export function AgentBuilderChat({
     setMessages(prev => [...prev, msg]);
   }, [setMessages]);
 
+<<<<<<< HEAD
   const updateMessage = useCallback((id: string, updates: Partial<ChatMessage>) => {
     setMessages(prev => prev.map(m => (m.id === id ? { ...m, ...updates } : m)));
   }, [setMessages]);
 
+=======
+  // Helper to remove messages by IDs
+>>>>>>> feat/spec-tree-plan
   const removeMessages = useCallback((ids: string[]) => {
     setMessages(prev => prev.filter(m => !ids.includes(m.id)));
   }, [setMessages]);
 
+<<<<<<< HEAD
   // Chat engine
   const engine = useChatEngine({
     messageAdapter: {
@@ -105,6 +137,85 @@ export function AgentBuilderChat({
             // Check for created agent
             if (event.event_type === 'complete' && event.answer) {
               const agentIdMatch = event.answer.match(/Agent.*?ID[:\s]+([a-f0-9-]{36})/i);
+=======
+  const handleSubmit = async (e?: React.FormEvent) => {
+    e?.preventDefault();
+    if (!input.trim() || isLoading || !agentBuilderId) return;
+
+    // Create abort controller for this request
+    const abortController = new AbortController();
+    abortControllerRef.current = abortController;
+
+    const now = Date.now();
+    const userMessage: ChatMessage = {
+      id: `user-${now}`,
+      role: 'user',
+      content: input.trim(),
+      timestamp: now,
+    };
+
+    const assistantMessageId = `assistant-${now}`;
+    const assistantMessage: ChatMessage = {
+      id: assistantMessageId,
+      role: 'assistant',
+      content: '',
+      timestamp: now,
+      isLoading: true,
+    };
+
+    // Track current request messages for potential removal on stop
+    currentRequestMessagesRef.current = [userMessage.id, assistantMessageId];
+
+    setMessages(prev => [...prev, userMessage, assistantMessage]);
+    setInput('');
+    setIsLoading(true);
+    setStreamingContent('');
+    setStreamingMessageId(assistantMessageId);
+    setCurrentOutputFiles([]);
+
+    const events: StreamEventRecord[] = [];
+    let traceId: string | undefined;
+
+    try {
+      await agentApi.runStream(
+        {
+          request: userMessage.content,
+          session_id: sessionId,
+          agent_id: agentBuilderId,
+          max_turns: maxTurns,
+          model_provider: selectedModelProvider || undefined,
+          model_name: selectedModelName || undefined,
+        },
+        (event: StreamEvent) => {
+          // Accumulate text_delta into assistant records, or map other events
+          handleStreamEvent(event, events);
+
+          switch (event.event_type) {
+            case 'run_started':
+              traceId = event.trace_id;
+              setMessages(prev => prev.map(m =>
+                m.id === assistantMessageId
+                  ? { ...m, traceId }
+                  : m
+              ));
+              break;
+            case 'output_file':
+              if (event.file_id && event.filename) {
+                const outputFile: OutputFileInfo = {
+                  file_id: event.file_id,
+                  filename: event.filename,
+                  size: event.size || 0,
+                  content_type: event.content_type || 'application/octet-stream',
+                  download_url: event.download_url || '',
+                  description: event.description,
+                };
+                setCurrentOutputFiles(prev => [...prev, outputFile]);
+              }
+              break;
+            case 'complete':
+              // Check if an agent was created
+              const agentIdMatch = event.answer?.match(/Agent.*?ID[:\s]+([a-f0-9-]{36})/i);
+>>>>>>> feat/spec-tree-plan
               if (agentIdMatch) {
                 setCreatedAgentId(agentIdMatch[1]);
               }
@@ -149,15 +260,24 @@ export function AgentBuilderChat({
         <div className="px-4 py-3 border-b bg-muted/20 space-y-3 shrink-0">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1">
+<<<<<<< HEAD
               <Label htmlFor="model" className="text-xs">{t('create.modelLabel')}</Label>
+=======
+              <Label htmlFor="model" className="text-xs">Model</Label>
+>>>>>>> feat/spec-tree-plan
               <ModelSelect
                 value={null}
                 modelProvider={selectedModelProvider}
                 modelName={selectedModelName}
                 onChange={(p, m) => { setSelectedModelProvider(p); setSelectedModelName(m); }}
                 providers={modelProviders}
+<<<<<<< HEAD
                 placeholder={t('create.modelDefault')}
                 aria-label={t('create.modelLabel')}
+=======
+                placeholder="Default (Kimi 2.5)"
+                aria-label="Model"
+>>>>>>> feat/spec-tree-plan
               />
             </div>
             <div className="space-y-1">

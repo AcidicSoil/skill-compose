@@ -146,7 +146,11 @@ export default function SessionsPage() {
                             {session.agent_id === CHAT_SENTINEL ? (
                               <Badge variant="secondary">{t('filters.chatBadge')}</Badge>
                             ) : session.agent_name ? (
+<<<<<<< HEAD
                               <Badge variant="outline">{getAgentDisplayName(ta, session.agent_name)}</Badge>
+=======
+                              <Badge variant="outline">{session.agent_name}</Badge>
+>>>>>>> feat/spec-tree-plan
                             ) : null}
                             <span>{t('card.messageCount', { count: session.message_count })}</span>
                             <span className="flex items-center gap-1">

@@ -230,4 +230,10 @@ uploads/*                   # Uploaded files
 uploads/.gitkeep           # Keep directory structure
 
 CLAUDE.md
+<<<<<<< HEAD
 
+=======
+.gitnexus
+.dmux/
+.worktrees/
+>>>>>>> feat/spec-tree-plan

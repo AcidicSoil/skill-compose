@@ -18,7 +18,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.agent.agent import StreamEvent
 from app.agent.event_stream import EventStream
+<<<<<<< HEAD
 from app.api.v1.sessions import SessionData
+=======
+>>>>>>> feat/spec-tree-plan
 
 
 @dataclass
@@ -127,6 +130,7 @@ def _mock_session_local(db_session: AsyncSession):
 
 
 @pytest.mark.asyncio
+<<<<<<< HEAD
 @patch("app.api.v1.agent.pre_compress_if_needed", new_callable=AsyncMock, return_value=[])
 @patch("app.api.v1.agent.save_session_checkpoint", new_callable=AsyncMock)
 @patch("app.api.v1.agent.save_session_messages", new_callable=AsyncMock)
@@ -134,6 +138,13 @@ def _mock_session_local(db_session: AsyncSession):
 @patch("app.api.v1.agent.create_agent")
 async def test_stream_returns_event_stream(mock_create, _mock_load, _mock_save, _mock_checkpoint, _mock_precompress, client):
     mock_create.return_value = _make_mock_agent_instance()
+=======
+@patch("app.api.v1.agent.save_session_messages", new_callable=AsyncMock)
+@patch("app.api.v1.agent.load_or_create_session", new_callable=AsyncMock, return_value=("test-session-id", None))
+@patch("app.api.v1.agent.SkillsAgent")
+async def test_stream_returns_event_stream(MockAgent, _mock_load, _mock_save, client):
+    MockAgent.return_value = _make_mock_agent_instance()
+>>>>>>> feat/spec-tree-plan
 
     response = await client.post(
         "/api/v1/agent/run/stream",
@@ -144,6 +155,7 @@ async def test_stream_returns_event_stream(mock_create, _mock_load, _mock_save, 
 
 
 @pytest.mark.asyncio
+<<<<<<< HEAD
 @patch("app.api.v1.agent.pre_compress_if_needed", new_callable=AsyncMock, return_value=[])
 @patch("app.api.v1.agent.save_session_checkpoint", new_callable=AsyncMock)
 @patch("app.api.v1.agent.save_session_messages", new_callable=AsyncMock)
@@ -152,6 +164,14 @@ async def test_stream_returns_event_stream(mock_create, _mock_load, _mock_save, 
 @patch("app.api.v1.agent.create_agent")
 async def test_stream_sends_run_started(mock_create, MockSessionLocal, _mock_load, _mock_save, _mock_checkpoint, _mock_precompress, client, db_session):
     mock_create.return_value = _make_mock_agent_instance()
+=======
+@patch("app.api.v1.agent.save_session_messages", new_callable=AsyncMock)
+@patch("app.api.v1.agent.load_or_create_session", new_callable=AsyncMock, return_value=("test-session-id", None))
+@patch("app.api.v1.agent.AsyncSessionLocal")
+@patch("app.api.v1.agent.SkillsAgent")
+async def test_stream_sends_run_started(MockAgent, MockSessionLocal, _mock_load, _mock_save, client, db_session):
+    MockAgent.return_value = _make_mock_agent_instance()
+>>>>>>> feat/spec-tree-plan
     MockSessionLocal.side_effect = lambda: _mock_session_local(db_session)()
 
     response = await client.post(
@@ -169,6 +189,7 @@ async def test_stream_sends_run_started(mock_create, MockSessionLocal, _mock_loa
 
 
 @pytest.mark.asyncio
+<<<<<<< HEAD
 @patch("app.api.v1.agent.pre_compress_if_needed", new_callable=AsyncMock, return_value=[])
 @patch("app.api.v1.agent.save_session_checkpoint", new_callable=AsyncMock)
 @patch("app.api.v1.agent.save_session_messages", new_callable=AsyncMock)
@@ -177,6 +198,14 @@ async def test_stream_sends_run_started(mock_create, MockSessionLocal, _mock_loa
 @patch("app.api.v1.agent.create_agent")
 async def test_stream_sends_trace_saved(mock_create, MockSessionLocal, _mock_load, _mock_save, _mock_checkpoint, _mock_precompress, client, db_session):
     mock_create.return_value = _make_mock_agent_instance()
+=======
+@patch("app.api.v1.agent.save_session_messages", new_callable=AsyncMock)
+@patch("app.api.v1.agent.load_or_create_session", new_callable=AsyncMock, return_value=("test-session-id", None))
+@patch("app.api.v1.agent.AsyncSessionLocal")
+@patch("app.api.v1.agent.SkillsAgent")
+async def test_stream_sends_trace_saved(MockAgent, MockSessionLocal, _mock_load, _mock_save, client, db_session):
+    MockAgent.return_value = _make_mock_agent_instance()
+>>>>>>> feat/spec-tree-plan
     MockSessionLocal.side_effect = lambda: _mock_session_local(db_session)()
 
     response = await client.post(
@@ -191,6 +220,7 @@ async def test_stream_sends_trace_saved(mock_create, MockSessionLocal, _mock_loa
 
 
 @pytest.mark.asyncio
+<<<<<<< HEAD
 @patch("app.api.v1.agent.pre_compress_if_needed", new_callable=AsyncMock, return_value=[])
 @patch("app.api.v1.agent.save_session_checkpoint", new_callable=AsyncMock)
 @patch("app.api.v1.agent.save_session_messages", new_callable=AsyncMock)
@@ -199,6 +229,14 @@ async def test_stream_sends_trace_saved(mock_create, MockSessionLocal, _mock_loa
 @patch("app.api.v1.agent.create_agent")
 async def test_stream_with_skills(mock_create, MockSessionLocal, _mock_load, _mock_save, _mock_checkpoint, _mock_precompress, client, db_session):
     mock_create.return_value = _make_mock_agent_instance()
+=======
+@patch("app.api.v1.agent.save_session_messages", new_callable=AsyncMock)
+@patch("app.api.v1.agent.load_or_create_session", new_callable=AsyncMock, return_value=("test-session-id", None))
+@patch("app.api.v1.agent.AsyncSessionLocal")
+@patch("app.api.v1.agent.SkillsAgent")
+async def test_stream_with_skills(MockAgent, MockSessionLocal, _mock_load, _mock_save, client, db_session):
+    MockAgent.return_value = _make_mock_agent_instance()
+>>>>>>> feat/spec-tree-plan
     MockSessionLocal.side_effect = lambda: _mock_session_local(db_session)()
 
     response = await client.post(
@@ -215,6 +253,7 @@ async def test_stream_with_skills(mock_create, MockSessionLocal, _mock_load, _mo
 
 
 @pytest.mark.asyncio
+<<<<<<< HEAD
 @patch("app.api.v1.agent.pre_compress_if_needed", new_callable=AsyncMock, return_value=[])
 @patch("app.api.v1.agent.save_session_checkpoint", new_callable=AsyncMock)
 @patch("app.api.v1.agent.save_session_messages", new_callable=AsyncMock)
@@ -223,6 +262,14 @@ async def test_stream_with_skills(mock_create, MockSessionLocal, _mock_load, _mo
 @patch("app.api.v1.agent.create_agent")
 async def test_stream_with_mcp_servers(mock_create, MockSessionLocal, _mock_load, _mock_save, _mock_checkpoint, _mock_precompress, client, db_session):
     mock_create.return_value = _make_mock_agent_instance()
+=======
+@patch("app.api.v1.agent.save_session_messages", new_callable=AsyncMock)
+@patch("app.api.v1.agent.load_or_create_session", new_callable=AsyncMock, return_value=("test-session-id", None))
+@patch("app.api.v1.agent.AsyncSessionLocal")
+@patch("app.api.v1.agent.SkillsAgent")
+async def test_stream_with_mcp_servers(MockAgent, MockSessionLocal, _mock_load, _mock_save, client, db_session):
+    MockAgent.return_value = _make_mock_agent_instance()
+>>>>>>> feat/spec-tree-plan
     MockSessionLocal.side_effect = lambda: _mock_session_local(db_session)()
 
     response = await client.post(
@@ -236,6 +283,7 @@ async def test_stream_with_mcp_servers(mock_create, MockSessionLocal, _mock_load
 
 
 @pytest.mark.asyncio
+<<<<<<< HEAD
 @patch("app.api.v1.agent.pre_compress_if_needed", new_callable=AsyncMock, return_value=[])
 @patch("app.api.v1.agent.save_session_checkpoint", new_callable=AsyncMock)
 @patch("app.api.v1.agent.save_session_messages", new_callable=AsyncMock)
@@ -243,6 +291,13 @@ async def test_stream_with_mcp_servers(mock_create, MockSessionLocal, _mock_load
 @patch("app.api.v1.agent.AsyncSessionLocal")
 @patch("app.api.v1.agent.create_agent")
 async def test_stream_error_handling(mock_create, MockSessionLocal, _mock_load, _mock_save, _mock_checkpoint, _mock_precompress, client, db_session):
+=======
+@patch("app.api.v1.agent.save_session_messages", new_callable=AsyncMock)
+@patch("app.api.v1.agent.load_or_create_session", new_callable=AsyncMock, return_value=("test-session-id", None))
+@patch("app.api.v1.agent.AsyncSessionLocal")
+@patch("app.api.v1.agent.SkillsAgent")
+async def test_stream_error_handling(MockAgent, MockSessionLocal, _mock_load, _mock_save, client, db_session):
+>>>>>>> feat/spec-tree-plan
     """When agent encounters error, it pushes error complete event and stream includes it."""
     # In the async architecture, agent.run() catches errors internally
     # and pushes a complete event with success=False
@@ -264,7 +319,11 @@ async def test_stream_error_handling(mock_create, MockSessionLocal, _mock_load, 
             },
         ),
     ]
+<<<<<<< HEAD
     mock_create.return_value = _make_mock_agent_instance(events=error_events)
+=======
+    MockAgent.return_value = _make_mock_agent_instance(events=error_events)
+>>>>>>> feat/spec-tree-plan
     MockSessionLocal.side_effect = lambda: _mock_session_local(db_session)()
 
     response = await client.post(
@@ -429,6 +488,7 @@ async def test_steer_cross_worker_completed_trace_409(client, db_session):
     )
     assert resp.status_code == 409
     assert "already completed" in resp.json()["detail"]
+<<<<<<< HEAD
 
 
 @pytest.mark.asyncio
@@ -478,3 +538,5 @@ async def test_steer_409_response_body(client):
         assert "already completed" in body["detail"]
     finally:
         _active_streams.pop("test-trace-409-body", None)
+=======
+>>>>>>> feat/spec-tree-plan

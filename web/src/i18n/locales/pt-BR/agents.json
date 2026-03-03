@@ -26,8 +26,12 @@
   "detail": {
     "tabs": {
       "overview": "Visão Geral",
+<<<<<<< HEAD
       "configuration": "Configuração",
       "memory": "Memória"
+=======
+      "configuration": "Configuração"
+>>>>>>> feat/spec-tree-plan
     },
     "overview": "Visão Geral",
     "configuration": "Configuração",

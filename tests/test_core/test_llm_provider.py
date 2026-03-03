@@ -77,6 +77,7 @@ class TestProviderConfig:
         assert "moonshot.cn" in PROVIDER_BASE_URLS["kimi"]
         assert "googleapis.com" in PROVIDER_BASE_URLS["google"]
 
+<<<<<<< HEAD
     def test_model_max_output_tokens(self):
         """Verify max output tokens are set per model."""
         assert get_max_output_tokens("deepseek", "deepseek-chat") == 8192
@@ -90,6 +91,43 @@ class TestProviderConfig:
         assert client.max_output_tokens == 65535
         client2 = LLMClient(provider="deepseek", model="deepseek-chat")
         assert client2.max_output_tokens == 8192
+=======
+    def test_openai_sync_client_uses_settings_base_url(self):
+        """OpenAI sync client should use OPENAI_BASE_URL from settings."""
+        with patch("app.llm.provider.get_settings", create=True) as mock_get_settings:
+            mock_get_settings.return_value.openai_base_url = "https://proxy.example/v1"
+            with patch("openai.OpenAI") as mock_openai:
+                client = LLMClient(provider="openai", api_key="x")
+                client._get_openai_client()
+
+        assert mock_openai.call_args.kwargs["base_url"] == "https://proxy.example/v1"
+
+    def test_openai_async_client_uses_settings_base_url(self):
+        """OpenAI async client should use OPENAI_BASE_URL from settings."""
+        with patch("app.llm.provider.get_settings", create=True) as mock_get_settings:
+            mock_get_settings.return_value.openai_base_url = "https://proxy.example/v1"
+            with patch("openai.AsyncOpenAI") as mock_async_openai:
+                client = LLMClient(provider="openai", api_key="x")
+                client._get_async_openai_client()
+
+        assert mock_async_openai.call_args.kwargs["base_url"] == "https://proxy.example/v1"
+
+    def test_non_openai_provider_keeps_provider_base_url(self):
+        """Non-OpenAI providers should keep their provider-specific base URL."""
+        with patch("openai.OpenAI") as mock_openai:
+            client = LLMClient(provider="deepseek", api_key="x")
+            client._get_openai_client()
+
+        assert mock_openai.call_args.kwargs["base_url"] == PROVIDER_BASE_URLS["deepseek"]
+
+    def test_provider_max_tokens(self):
+        """Verify max tokens limits."""
+        assert PROVIDER_MAX_TOKENS.get("deepseek") == 8192
+        assert PROVIDER_MAX_TOKENS.get("kimi") == 8192
+        # Anthropic and OpenAI don't have limits in this dict
+        assert "anthropic" not in PROVIDER_MAX_TOKENS
+        assert "openai" not in PROVIDER_MAX_TOKENS
+>>>>>>> feat/spec-tree-plan
 
 
 class TestToolConversion:

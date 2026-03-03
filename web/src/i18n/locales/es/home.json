@@ -65,9 +65,15 @@
     "executions": "Ejecuciones"
   },
   "quickActions": {
+<<<<<<< HEAD
     "findSkills": {
       "title": "Buscar Habilidades",
       "description": "Descubre habilidades de la comunidad"
+=======
+    "browseSkills": {
+      "title": "Explorar Habilidades",
+      "description": "Gestiona tu biblioteca de habilidades"
+>>>>>>> feat/spec-tree-plan
     },
     "createSkill": {
       "title": "Crear Habilidad",

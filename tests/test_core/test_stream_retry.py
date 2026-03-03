@@ -13,7 +13,10 @@ import pytest
 from unittest.mock import patch, MagicMock, AsyncMock
 from app.agent.agent import SkillsAgent, StreamEvent
 from app.agent.event_stream import EventStream
+<<<<<<< HEAD
 from app.api.v1.sessions import SessionData
+=======
+>>>>>>> feat/spec-tree-plan
 from app.llm.provider import LLMResponse, LLMTextBlock, LLMToolCall, LLMUsage
 
 
@@ -526,6 +529,7 @@ def _make_mock_agent_with_events(events_to_push):
 class TestStreamRetrySSE:
     """Test that the SSE endpoint properly handles text_delta + error from stream retry scenarios."""
 
+<<<<<<< HEAD
     @patch("app.api.v1.agent.pre_compress_if_needed", new_callable=AsyncMock, return_value=[])
     @patch("app.api.v1.agent.save_session_checkpoint", new_callable=AsyncMock)
     @patch("app.api.v1.agent.save_session_messages", new_callable=AsyncMock)
@@ -533,6 +537,13 @@ class TestStreamRetrySSE:
     @patch("app.api.v1.agent.AsyncSessionLocal")
     @patch("app.api.v1.agent.create_agent")
     async def test_sse_with_text_deltas(self, MockAgent, MockSessionLocal, _mock_load, _mock_save, _mock_checkpoint, _mock_precompress, client):
+=======
+    @patch("app.api.v1.agent.save_session_messages", new_callable=AsyncMock)
+    @patch("app.api.v1.agent.load_or_create_session", new_callable=AsyncMock, return_value=("test-session-id", None))
+    @patch("app.api.v1.agent.AsyncSessionLocal")
+    @patch("app.api.v1.agent.SkillsAgent")
+    async def test_sse_with_text_deltas(self, MockAgent, MockSessionLocal, _mock_load, _mock_save, client):
+>>>>>>> feat/spec-tree-plan
         """SSE stream carries text_delta events from normal streaming."""
         mock_instance = _make_mock_agent_with_events([
             StreamEvent(event_type="turn_start", turn=1, data={"max_turns": 60}),
@@ -570,6 +581,7 @@ class TestStreamRetrySSE:
         assert text_deltas[0]["text"] == "Hello "
         assert text_deltas[1]["text"] == "world!"
 
+<<<<<<< HEAD
     @patch("app.api.v1.agent.pre_compress_if_needed", new_callable=AsyncMock, return_value=[])
     @patch("app.api.v1.agent.save_session_checkpoint", new_callable=AsyncMock)
     @patch("app.api.v1.agent.save_session_messages", new_callable=AsyncMock)
@@ -577,6 +589,13 @@ class TestStreamRetrySSE:
     @patch("app.api.v1.agent.AsyncSessionLocal")
     @patch("app.api.v1.agent.create_agent")
     async def test_sse_with_error_after_deltas(self, MockAgent, MockSessionLocal, _mock_load, _mock_save, _mock_checkpoint, _mock_precompress, client):
+=======
+    @patch("app.api.v1.agent.save_session_messages", new_callable=AsyncMock)
+    @patch("app.api.v1.agent.load_or_create_session", new_callable=AsyncMock, return_value=("test-session-id", None))
+    @patch("app.api.v1.agent.AsyncSessionLocal")
+    @patch("app.api.v1.agent.SkillsAgent")
+    async def test_sse_with_error_after_deltas(self, MockAgent, MockSessionLocal, _mock_load, _mock_save, client):
+>>>>>>> feat/spec-tree-plan
         """SSE stream: text_deltas followed by error complete (simulates failed retry)."""
         mock_instance = _make_mock_agent_with_events([
             StreamEvent(event_type="turn_start", turn=1, data={"max_turns": 60}),
@@ -615,14 +634,23 @@ class TestStreamRetrySSE:
         assert len(complete_events) == 1
         assert complete_events[0]["success"] is False
 
+<<<<<<< HEAD
     @patch("app.api.v1.agent.pre_compress_if_needed", new_callable=AsyncMock, return_value=[])
     @patch("app.api.v1.agent.save_session_checkpoint", new_callable=AsyncMock)
     @patch("app.api.v1.agent.save_session_messages", new_callable=AsyncMock)
     @patch("app.api.v1.agent.load_or_create_session", new_callable=AsyncMock, return_value=SessionData(session_id="test-session-id"))
+=======
+    @patch("app.api.v1.agent.save_session_messages", new_callable=AsyncMock)
+    @patch("app.api.v1.agent.load_or_create_session", new_callable=AsyncMock, return_value=("test-session-id", None))
+>>>>>>> feat/spec-tree-plan
     @patch("app.api.v1.agent.AsyncSessionLocal")
     @patch("app.api.v1.agent.create_agent")
     async def test_sse_text_delta_buffer_flushed_on_tool_call(
+<<<<<<< HEAD
         self, MockAgent, MockSessionLocal, _mock_load, _mock_save, _mock_checkpoint, _mock_precompress, client
+=======
+        self, MockAgent, MockSessionLocal, _mock_load, _mock_save, client
+>>>>>>> feat/spec-tree-plan
     ):
         """Verify text_delta events are relayed and ordered correctly in SSE output."""
         mock_instance = _make_mock_agent_with_events([

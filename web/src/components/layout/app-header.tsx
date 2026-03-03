@@ -7,16 +7,23 @@ import {
   Sun,
   Moon,
   BookOpen,
+<<<<<<< HEAD
   Settings,
+=======
+  MoreHorizontal,
+>>>>>>> feat/spec-tree-plan
   Container,
   Folder,
   Terminal,
   Archive,
   MessageSquare,
   Activity,
+<<<<<<< HEAD
   Users,
   Clock,
   Radio,
+=======
+>>>>>>> feat/spec-tree-plan
 } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { Button } from '@/components/ui/button';
@@ -42,8 +49,11 @@ import { useTranslation } from '@/i18n/client';
 const MORE_MONITOR_ITEMS = [
   { href: '/traces', icon: Activity, labelKey: 'nav.traces' },
   { href: '/sessions', icon: MessageSquare, labelKey: 'nav.sessions' },
+<<<<<<< HEAD
   { href: '/scheduled-tasks', icon: Clock, labelKey: 'nav.scheduledTasks' },
   { href: '/channels', icon: Radio, labelKey: 'nav.channels' },
+=======
+>>>>>>> feat/spec-tree-plan
 ];
 
 const MORE_SYSTEM_ITEMS = [
@@ -71,7 +81,10 @@ export function AppHeader() {
 
           <nav className="flex items-center gap-4">
             <NavLink href="/agents">{t('nav.agents')}</NavLink>
+<<<<<<< HEAD
             <NavLink href="/skills">{t('nav.skills')}</NavLink>
+=======
+>>>>>>> feat/spec-tree-plan
             <NavLink href="/tools">{t('nav.tools')}</NavLink>
             <NavLink href="/mcp">{t('nav.mcp')}</NavLink>
           </nav>

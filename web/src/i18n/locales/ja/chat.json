@@ -115,7 +115,10 @@
     "notAvailable": "このエージェントは利用できません。",
     "sessionId": "セッション",
     "sessionIdCopied": "セッションIDをコピーしました",
+<<<<<<< HEAD
     "loadingSession": "会話を読み込み中...",
+=======
+>>>>>>> feat/spec-tree-plan
     "sidebar": {
       "title": "履歴",
       "noSessions": "会話がありません",
@@ -131,6 +134,7 @@
       "messagesCount": "{{count}} 件",
       "messagesCount_other": "{{count}} 件"
     }
+<<<<<<< HEAD
   },
   "askUser": {
     "waitingForResponse": "回答をお待ちしています...",
@@ -138,5 +142,7 @@
     "typeAnswer": "回答を入力...",
     "submit": "送信",
     "timedOut": "回答がタイムアウトしました"
+=======
+>>>>>>> feat/spec-tree-plan
   }
 }

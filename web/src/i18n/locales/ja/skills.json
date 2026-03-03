@@ -316,7 +316,11 @@
     "evolutionComplete": "進化完了！",
     "viewSkill": "スキルを表示",
     "backToSelection": "選択に戻る",
+<<<<<<< HEAD
     "agentNotFound": "agent-skill-evolver エージェントが見つかりません。バックエンドを再起動してください。",
+=======
+    "agentNotFound": "skill-evolve-helper エージェントが見つかりません。バックエンドを再起動してください。",
+>>>>>>> feat/spec-tree-plan
     "noUserSkills": "ユーザースキルが見つかりません。",
     "createOneFirst": "最初に作成してください",
     "failedToRunAgent": "エージェントの実行に失敗しました",
@@ -328,9 +332,13 @@
       "turns": "ターン数: {{count}}",
       "tokens": "トークン数: {{count}}",
       "duration": "所要時間: {{duration}}秒"
+<<<<<<< HEAD
     },
     "newChat": "新しいチャット",
     "history": "履歴"
+=======
+    }
+>>>>>>> feat/spec-tree-plan
   },
   "sync": {
     "title": "ファイルシステム同期",
@@ -401,6 +409,7 @@
       "invalidJson": "{{name}} のJSONが無効です",
       "skillMdRequired": "SKILL.mdの内容は必須です"
     }
+<<<<<<< HEAD
   },
   "seedDescriptions": {
     "skill-creator": "専門知識、ワークフロー、ツール統合でエージェント機能を拡張する効果的なスキル作成ガイド。",
@@ -437,5 +446,7 @@
     "twitter-algorithm-optimizer": "Twitterのオープンソースアルゴリズムの知見に基づきツイートを分析・最適化。ランキングシグナルに基づいてエンゲージメントと可視性を向上。",
     "slack-gif-creator": "Slack向けに最適化されたアニメーションGIF作成ツールキット。サイズ制約バリデーター、組み合わせ可能なアニメーションプリミティブ、メッセージGIFと絵文字GIF用ユーティリティ。",
     "humanizer-zh": "中国語テキストからAI生成の痕跡を除去します。誇張された象徴性、宣伝的な言語、浅い分析、曖昧な帰属、ダッシュの過剰使用、三段構成の乱用、AI語彙などのパターンを検出・修正します。"
+=======
+>>>>>>> feat/spec-tree-plan
   }
 }

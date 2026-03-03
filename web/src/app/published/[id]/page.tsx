@@ -2,7 +2,11 @@
 
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { useParams } from "next/navigation";
+<<<<<<< HEAD
 import { Paperclip, X, Square, Bot, Loader2, MessageSquarePlus, PanelLeft, Copy, Check } from "lucide-react";
+=======
+import { Paperclip, X, Square, Bot, Loader2, MessageSquarePlus, Navigation, PanelLeft, Copy, Check } from "lucide-react";
+>>>>>>> feat/spec-tree-plan
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { publishedAgentApi } from "@/lib/api";
@@ -11,14 +15,20 @@ import type { ChatMessage } from "@/stores/chat-store";
 import { ChatMessageItem } from "@/components/chat/chat-message";
 import { useChatEngine } from "@/hooks/use-chat-engine";
 import { useTranslation } from "@/i18n/client";
+<<<<<<< HEAD
 import { getAgentDisplayName } from "@/lib/seed-descriptions";
 import { generateUUID } from "@/lib/utils";
+=======
+>>>>>>> feat/spec-tree-plan
 import { toast } from "sonner";
 import { sessionMessagesToChatMessages } from "@/lib/session-utils";
 import { SessionSidebar } from "@/components/published/session-sidebar";
 import { useQueryClient } from "@tanstack/react-query";
 import { publishedSessionKeys } from "@/hooks/use-published-sessions";
+<<<<<<< HEAD
 import { LanguageSwitcher } from "@/components/layout/language-switcher";
+=======
+>>>>>>> feat/spec-tree-plan
 
 type LocalMessage = ChatMessage;
 
@@ -53,18 +63,21 @@ function getSessionStorageKey(agentId: string): string {
 }
 
 function getOrCreateSessionId(agentId: string): string {
-  if (typeof window === 'undefined') return generateUUID();
+  if (typeof window === 'undefined') return crypto.randomUUID();
   const key = getSessionStorageKey(agentId);
   const existing = sessionStorage.getItem(key);
   if (existing) return existing;
-  const id = generateUUID();
+  const id = crypto.randomUUID();
   sessionStorage.setItem(key, id);
   return id;
 }
 
 export default function PublishedChatPage() {
   const { t } = useTranslation('chat');
+<<<<<<< HEAD
   const { t: ta } = useTranslation('agents');
+=======
+>>>>>>> feat/spec-tree-plan
   const params = useParams();
   const agentId = params.id as string;
   const queryClient = useQueryClient();
@@ -195,7 +208,11 @@ export default function PublishedChatPage() {
   }, [isRunning, queryClient]);
 
   const handleNewChat = useCallback(() => {
+<<<<<<< HEAD
     const newId = generateUUID();
+=======
+    const newId = crypto.randomUUID();
+>>>>>>> feat/spec-tree-plan
     sessionStorage.setItem(getSessionStorageKey(agentId), newId);
     setSessionId(newId);
     setMessages([]);
@@ -211,7 +228,10 @@ export default function PublishedChatPage() {
     setMessages([]);
     setUploadedFiles([]);
     setMobileSidebarOpen(false);
+<<<<<<< HEAD
     setLoadingSession(true);
+=======
+>>>>>>> feat/spec-tree-plan
 
     try {
       const data = await publishedAgentApi.getSession(agentId, newSessionId);
@@ -220,8 +240,11 @@ export default function PublishedChatPage() {
       }
     } catch {
       // First visit or not found
+<<<<<<< HEAD
     } finally {
       setLoadingSession(false);
+=======
+>>>>>>> feat/spec-tree-plan
     }
   }, [agentId, sessionId, isRunning]);
 
@@ -294,11 +317,18 @@ export default function PublishedChatPage() {
           </Button>
           <Bot className="h-6 w-6 text-primary" />
           <div className="flex-1 min-w-0">
+<<<<<<< HEAD
             <h1 className="font-semibold text-lg">{agentName ? getAgentDisplayName(ta, agentName) : null}</h1>
             {agentDescription && <p className="text-sm text-muted-foreground truncate">{agentDescription}</p>}
           </div>
           <SessionIdBadge sessionId={sessionId} label={t('published.sessionId')} copiedText={t('published.sessionIdCopied')} />
           <LanguageSwitcher />
+=======
+            <h1 className="font-semibold text-lg">{agentName}</h1>
+            {agentDescription && <p className="text-sm text-muted-foreground truncate">{agentDescription}</p>}
+          </div>
+          <SessionIdBadge sessionId={sessionId} label={t('published.sessionId')} copiedText={t('published.sessionIdCopied')} />
+>>>>>>> feat/spec-tree-plan
           <Button variant="outline" size="sm" onClick={handleNewChat} disabled={isRunning} title={t('newChat')}>
             <MessageSquarePlus className="h-4 w-4 sm:mr-1" />
             <span className="hidden sm:inline">{t('newChat')}</span>
@@ -307,6 +337,7 @@ export default function PublishedChatPage() {
 
         {/* Messages */}
         <div className="flex-1 overflow-auto p-4 sm:p-6 space-y-4">
+<<<<<<< HEAD
           {loadingSession ? (
             <div className="flex flex-col items-center justify-center py-16 gap-3">
               <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
@@ -320,6 +351,16 @@ export default function PublishedChatPage() {
             </div>
           ) : (
             messages.map((message, idx) => (
+=======
+          {messages.length === 0 ? (
+            <div className="text-center text-muted-foreground py-16">
+              <Bot className="h-12 w-12 mx-auto mb-4 opacity-50" />
+              <p className="text-lg">{t('startConversation')}</p>
+              <p className="text-sm mt-2">{t('published.typeToBegin')}</p>
+            </div>
+          ) : (
+            messages.map((message) => (
+>>>>>>> feat/spec-tree-plan
               <div key={message.id} className="max-w-4xl mx-auto">
                 <ChatMessageItem
                   message={message}
@@ -327,8 +368,11 @@ export default function PublishedChatPage() {
                   streamingEvents={message.id === engine.streamingMessageId ? engine.streamingEvents : undefined}
                   streamingOutputFiles={message.id === engine.streamingMessageId ? engine.currentOutputFiles : undefined}
                   hideTraceLink
+<<<<<<< HEAD
                   onAskUserRespond={engine.handleRespond}
                   askUserAnswer={message.role === 'assistant' && messages[idx + 1]?.role === 'user' ? messages[idx + 1].content : undefined}
+=======
+>>>>>>> feat/spec-tree-plan
                 />
               </div>
             ))
@@ -357,7 +401,11 @@ export default function PublishedChatPage() {
                 value={engine.input}
                 onChange={(e) => engine.setInput(e.target.value)}
                 onKeyDown={engine.handleKeyDown}
+<<<<<<< HEAD
                 placeholder={t('placeholder')}
+=======
+                placeholder={isRunning ? t('steering.placeholder') : t('placeholder')}
+>>>>>>> feat/spec-tree-plan
                 className="min-h-[80px] resize-none"
                 aria-label={t('placeholder')}
               />
@@ -376,12 +424,21 @@ export default function PublishedChatPage() {
                   <Button onClick={engine.handleStop} variant="destructive" size="sm">
                     <Square className="h-4 w-4 mr-1" />{t('stop')}
                   </Button>
+<<<<<<< HEAD
                   <Button onClick={() => engine.handleSubmit()} disabled={!engine.input.trim()} size="sm">
                     {t('send')}
                   </Button>
                 </div>
               ) : (
                 <Button onClick={() => engine.handleSubmit()} disabled={!engine.input.trim()}>{t('send')}</Button>
+=======
+                  <Button onClick={engine.handleSubmit} disabled={!engine.input.trim()} size="sm">
+                    <Navigation className="h-4 w-4 mr-1" />{t('steering.button')}
+                  </Button>
+                </div>
+              ) : (
+                <Button onClick={engine.handleSubmit} disabled={!engine.input.trim()}>{t('send')}</Button>
+>>>>>>> feat/spec-tree-plan
               )}
             </div>
           </div>

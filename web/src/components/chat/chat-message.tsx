@@ -51,7 +51,11 @@ export function ChatMessageItem({
   if (message.role === "user") {
     return (
       <div className="flex justify-end">
+<<<<<<< HEAD
         <Card className="max-w-[85%] p-3 px-4 bg-[#f4f4f4] dark:bg-[#303030] text-foreground border-0 shadow-none rounded-2xl">
+=======
+        <Card className="max-w-[85%] p-3 px-4 bg-primary text-primary-foreground">
+>>>>>>> feat/spec-tree-plan
           <p className="text-sm whitespace-pre-wrap">{message.content}</p>
           {message.attachedFiles && message.attachedFiles.length > 0 && (
             <div className="flex flex-wrap gap-1.5 mt-2 pt-2 border-t border-foreground/10">

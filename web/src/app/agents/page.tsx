@@ -44,6 +44,7 @@ export default function AgentsPage() {
   const deletePreset = useDeleteAgentPreset();
   const { data: executorsData } = useExecutors();
 
+<<<<<<< HEAD
   const executorMap = useMemo(() => {
     const map = new Map<string, Executor>();
     if (executorsData?.executors) {
@@ -63,6 +64,14 @@ export default function AgentsPage() {
           translatedDesc?.toLowerCase().includes(searchQuery.toLowerCase());
       }
     ), [data?.presets, searchQuery, t]);
+=======
+  const filteredPresets = useMemo(() =>
+    data?.presets.filter(
+      (preset) =>
+        preset.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        preset.description?.toLowerCase().includes(searchQuery.toLowerCase())
+    ), [data?.presets, searchQuery]);
+>>>>>>> feat/spec-tree-plan
 
   // Separate user agents and meta agents
   const userAgents = useMemo(() => filteredPresets?.filter((preset) => !preset.is_system) || [], [filteredPresets]);
@@ -155,7 +164,10 @@ export default function AgentsPage() {
                     key={preset.id}
                     preset={preset}
                     onDelete={() => handleDelete(preset.id)}
+<<<<<<< HEAD
                     executorMap={executorMap}
+=======
+>>>>>>> feat/spec-tree-plan
                     t={t}
                     tc={tc}
                   />
@@ -167,17 +179,24 @@ export default function AgentsPage() {
           {/* Meta Agents */}
           {!isLoading && metaAgents.length > 0 && (
             <div className="mb-8">
+<<<<<<< HEAD
               <h2 className="text-lg font-semibold mb-4 flex items-center gap-2 text-muted-foreground">
                 <Settings2 className="h-4 w-4" />
                 {t('list.meta')}
               </h2>
+=======
+              <h2 className="text-lg font-semibold mb-4 text-muted-foreground">{t('list.meta')}</h2>
+>>>>>>> feat/spec-tree-plan
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 {metaAgents.map((preset) => (
                   <AgentPresetCard
                     key={preset.id}
                     preset={preset}
                     onDelete={() => handleDelete(preset.id)}
+<<<<<<< HEAD
                     executorMap={executorMap}
+=======
+>>>>>>> feat/spec-tree-plan
                     t={t}
                     tc={tc}
                   />
@@ -278,6 +297,7 @@ function AgentPresetCard({
                     <p className="text-xs">{preset.mcp_servers.slice(2).join(', ')}</p>
                   </TooltipContent>
                 </Tooltip>
+<<<<<<< HEAD
               )}
             </div>
           )}
@@ -293,6 +313,8 @@ function AgentPresetCard({
                   <AlertTriangle className="h-3 w-3 mr-1" />
                   {executor.name} ({t('executor.offline')})
                 </Badge>
+=======
+>>>>>>> feat/spec-tree-plan
               )}
             </div>
           )}

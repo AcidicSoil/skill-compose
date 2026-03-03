@@ -1,10 +1,18 @@
 'use client';
 
+<<<<<<< HEAD
 import { useState, useMemo } from 'react';
 import { useRouter, useParams, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
 import { ArrowLeft, MessageSquare, Bot, Server } from 'lucide-react';
+=======
+import { useState } from 'react';
+import { useRouter, useParams, useSearchParams } from 'next/navigation';
+import Link from 'next/link';
+import { useQuery } from '@tanstack/react-query';
+import { ArrowLeft, MessageSquare, Bot } from 'lucide-react';
+>>>>>>> feat/spec-tree-plan
 import { Spinner } from '@/components/ui/spinner';
 import { useTranslation } from '@/i18n/client';
 import { getAgentDescription, getAgentDisplayName } from '@/lib/seed-descriptions';
@@ -23,14 +31,20 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { useAgentPreset, useUpdateAgentPreset, useDeleteAgentPreset, usePublishAgent, useUnpublishAgent } from '@/hooks/use-agents';
+<<<<<<< HEAD
 import { useExecutors } from '@/hooks/use-executors';
+=======
+>>>>>>> feat/spec-tree-plan
 import { modelsApi, toolsApi } from '@/lib/api';
 import { useChatStore } from '@/stores/chat-store';
 import { useChatPanel } from '@/components/chat/chat-provider';
 import { AgentConfigForm, type AgentFormValues } from '@/components/agents/agent-config-form';
 import { PublishCard } from '@/components/agents/publish-card';
 import { PublishDialog } from '@/components/agents/publish-dialog';
+<<<<<<< HEAD
 import { AgentMemoryTab } from '@/components/agents/agent-memory-tab';
+=======
+>>>>>>> feat/spec-tree-plan
 
 export default function AgentDetailPage() {
   const router = useRouter();
@@ -68,6 +82,7 @@ export default function AgentDetailPage() {
   });
   const tools = toolsData?.tools || [];
 
+<<<<<<< HEAD
   // Fetch executors for status display
   const { data: executorsData } = useExecutors();
   const executorInfo = useMemo(() => {
@@ -76,6 +91,8 @@ export default function AgentDetailPage() {
   }, [preset?.executor_name, executorsData?.executors]);
   const isExecutorOffline = executorInfo ? executorInfo.status !== 'online' : false;
 
+=======
+>>>>>>> feat/spec-tree-plan
   // Chat store + panel
   const {
     messages,
@@ -92,6 +109,7 @@ export default function AgentDetailPage() {
   } = useChatStore();
   const chatPanel = useChatPanel();
 
+<<<<<<< HEAD
   // Memoize initialValues so the form's sync-useEffect doesn't reset user edits
   // on every parent re-render. Only recompute when the preset actually changes.
   const formInitialValues = useMemo(() => {
@@ -113,6 +131,10 @@ export default function AgentDetailPage() {
 
   // ─── Handlers ──────────────────────────────────────────
 
+=======
+  // ─── Handlers ──────────────────────────────────────────
+
+>>>>>>> feat/spec-tree-plan
   const handleTabChange = (value: string) => {
     const params = new URLSearchParams(searchParams.toString());
     params.set('tab', value);
@@ -121,8 +143,11 @@ export default function AgentDetailPage() {
 
   const applyPresetToChat = () => {
     if (!preset) return;
+<<<<<<< HEAD
     // Reset session so the new agent gets a fresh server-side session
     setSessionId(null);
+=======
+>>>>>>> feat/spec-tree-plan
     setSelectedSkills(preset.skill_ids || []);
     setMaxTurns(preset.max_turns);
     if (preset.builtin_tools === null && tools.length > 0) {
@@ -134,7 +159,11 @@ export default function AgentDetailPage() {
     }
     setSelectedMcpServers(preset.mcp_servers || []);
     setSelectedModel(preset.model_provider || null, preset.model_name || null);
+<<<<<<< HEAD
     setChatExecutorId(preset.executor_name || null);
+=======
+    setChatExecutorId(preset.executor_id || null);
+>>>>>>> feat/spec-tree-plan
     setSelectedAgentPreset(preset.id);
     chatPanel.open(preset.skill_ids || []);
   };
@@ -173,7 +202,11 @@ export default function AgentDetailPage() {
         max_turns: values.max_turns,
         model_provider: values.model_provider ?? null,
         model_name: values.model_name ?? null,
+<<<<<<< HEAD
         executor_name: values.executor_name ?? null,
+=======
+        executor_id: values.executor_id ?? null,
+>>>>>>> feat/spec-tree-plan
       });
       setHasChanges(false);
     } catch (error) {
@@ -249,6 +282,8 @@ export default function AgentDetailPage() {
 
   // ─── Render ────────────────────────────────────────────
 
+  // ─── Render ────────────────────────────────────────────
+
   return (
     <div className="container mx-auto py-8 max-w-2xl">
       {/* Header */}
@@ -273,10 +308,16 @@ export default function AgentDetailPage() {
 
       {/* Tabs */}
       <Tabs value={initialTab} onValueChange={handleTabChange}>
+<<<<<<< HEAD
         <TabsList className="grid w-full grid-cols-3 mb-6">
           <TabsTrigger value="overview">{t('detail.tabs.overview')}</TabsTrigger>
           <TabsTrigger value="configuration">{t('detail.tabs.configuration')}</TabsTrigger>
           <TabsTrigger value="memory">{t('detail.tabs.memory')}</TabsTrigger>
+=======
+        <TabsList className="grid w-full grid-cols-2 mb-6">
+          <TabsTrigger value="overview">{t('detail.tabs.overview')}</TabsTrigger>
+          <TabsTrigger value="configuration">{t('detail.tabs.configuration')}</TabsTrigger>
+>>>>>>> feat/spec-tree-plan
         </TabsList>
 
         {/* Overview Tab */}
@@ -302,8 +343,11 @@ export default function AgentDetailPage() {
             <PublishCard
               preset={preset}
               isUnpublishing={unpublishAgent.isPending}
+<<<<<<< HEAD
               executorOffline={isExecutorOffline}
               executorName={executorInfo?.name}
+=======
+>>>>>>> feat/spec-tree-plan
               onPublish={() => setShowPublishDialog(true)}
               onUnpublish={() => unpublishAgent.mutate()}
             />
@@ -327,6 +371,7 @@ export default function AgentDetailPage() {
                     : t('detail.modelDefault')}
                 </span>
               </div>
+<<<<<<< HEAD
               {executorInfo && (
                 <div className="flex justify-between items-center">
                   <span className="flex items-center gap-1">
@@ -338,6 +383,8 @@ export default function AgentDetailPage() {
                   </Badge>
                 </div>
               )}
+=======
+>>>>>>> feat/spec-tree-plan
               <div className="flex justify-between">
                 <span>{t('overview.createdAt')}:</span>
                 <span>{new Date(preset.created_at).toLocaleString()}</span>
@@ -359,7 +406,22 @@ export default function AgentDetailPage() {
             <CardContent>
               <AgentConfigForm
                 mode="edit"
+<<<<<<< HEAD
                 initialValues={formInitialValues!}
+=======
+                initialValues={{
+                  name: preset.name,
+                  description: preset.description || '',
+                  system_prompt: preset.system_prompt || '',
+                  skill_ids: preset.skill_ids || [],
+                  builtin_tools: preset.builtin_tools ?? undefined,
+                  mcp_servers: preset.mcp_servers || [],
+                  max_turns: preset.max_turns,
+                  model_provider: preset.model_provider || null,
+                  model_name: preset.model_name || null,
+                  executor_id: preset.executor_id || null,
+                }}
+>>>>>>> feat/spec-tree-plan
                 isSystem={preset.is_system}
                 isProcessing={isProcessing}
                 isSaving={updatePreset.isPending}
@@ -373,11 +435,14 @@ export default function AgentDetailPage() {
             </CardContent>
           </Card>
         </TabsContent>
+<<<<<<< HEAD
 
         {/* Memory Tab */}
         <TabsContent value="memory">
           <AgentMemoryTab agentId={presetId} />
         </TabsContent>
+=======
+>>>>>>> feat/spec-tree-plan
       </Tabs>
 
       {/* Clear Conversation AlertDialog */}

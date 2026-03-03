@@ -4,8 +4,13 @@
   "empty": "暂无会话",
   "emptyDescription": "与已发布的智能体聊天以创建会话",
   "filters": {
+<<<<<<< HEAD
     "allAgents": "所有智能体",
     "byAgent": "按智能体筛选",
+=======
+    "allAgents": "所有代理",
+    "byAgent": "按代理筛选",
+>>>>>>> feat/spec-tree-plan
     "chatSessions": "聊天",
     "chatBadge": "聊天"
   },

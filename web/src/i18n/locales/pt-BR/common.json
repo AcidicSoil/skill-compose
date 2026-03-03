@@ -13,9 +13,12 @@
     "terminal": "Terminal",
     "sessions": "Sessões",
     "more": "Mais",
+<<<<<<< HEAD
     "accounts": "Contas",
     "scheduledTasks": "Tarefas Agendadas",
     "channels": "Canais",
+=======
+>>>>>>> feat/spec-tree-plan
     "groupMonitor": "Monitor",
     "groupSystem": "Sistema"
   },

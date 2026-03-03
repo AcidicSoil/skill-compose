@@ -59,15 +59,25 @@
   },
   "stats": {
     "skills": "技能",
+<<<<<<< HEAD
     "agents": "智能体",
+=======
+    "agents": "代理",
+>>>>>>> feat/spec-tree-plan
     "mcpServers": "MCP 服务",
     "executors": "执行器",
     "executions": "执行次数"
   },
   "quickActions": {
+<<<<<<< HEAD
     "findSkills": {
       "title": "查找技能",
       "description": "发现社区技能"
+=======
+    "browseSkills": {
+      "title": "浏览技能",
+      "description": "管理你的技能库"
+>>>>>>> feat/spec-tree-plan
     },
     "createSkill": {
       "title": "创建技能",

@@ -44,6 +44,16 @@
       "notFolder": "Please drop a folder, not a file. Use the 'Upload File' tab for .skill/.zip files.",
       "noSkillMd": "Folder must contain a SKILL.md file at the root level",
       "readFailed": "Failed to read folder contents"
+    },
+    "multi": {
+      "label": "Multi-skill import",
+      "detectedSkills": "{{count}} skill(s) detected"
+    },
+    "conflict": {
+      "label": "Conflict strategy",
+      "skip": "Skip existing",
+      "copy": "Create copy",
+      "overwrite": "Overwrite"
     }
   },
   "status": {
@@ -55,7 +65,15 @@
     "genericError": "Import failed",
     "githubError": "GitHub import failed",
     "skippedFiles": "{{count}} file(s) skipped (unsupported types: compiled artifacts like .exe, .dll, .so)",
-    "skippedFilesList": "Skipped: {{files}}"
+    "skippedFilesList": "Skipped: {{files}}",
+    "bulkImported": "{{count}} imported",
+    "bulkSkipped": "{{count}} skipped",
+    "bulkFailed": "{{count}} failed",
+    "resultImported": "Imported",
+    "resultSkipped": "Skipped",
+    "resultFailed": "Failed",
+    "resultConflict": "Conflict",
+    "resultReady": "Ready"
   },
   "about": {
     "title": "About Skill Import",

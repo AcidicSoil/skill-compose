@@ -85,6 +85,7 @@ async def test_push_and_iterate():
     # Injection queue is independent
     assert es.has_injection() is True
     assert es.get_injection_nowait() == "steer me"
+<<<<<<< HEAD
 
 
 @pytest.mark.asyncio
@@ -130,3 +131,5 @@ async def test_duplicate_steering_messages_get_unique_ids():
     for e in events:
         assert e.event_type == "steering_received"
         assert e.data["message"] == "continue"
+=======
+>>>>>>> feat/spec-tree-plan

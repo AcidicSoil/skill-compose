@@ -28,7 +28,10 @@ from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.agent.agent import StreamEvent
+<<<<<<< HEAD
 from app.api.v1.sessions import SessionData
+=======
+>>>>>>> feat/spec-tree-plan
 from tests.test_e2e.conftest import parse_sse_events
 
 
@@ -121,8 +124,13 @@ class TestCompressionTurnBoundariesE2E:
             messages.extend(_make_simple_turn(f"Q{i}", f"A{i}"))
 
         compressed, s_in, s_out = await agent._compress_messages(messages)
+<<<<<<< HEAD
         # Should keep last 5 turns = 10 messages, compress first 3 turns
         # compressed = [summary_user, ack_assistant] + 10 recent = 12
+=======
+        # Should keep last 3 turns = 6 messages, compress first 2 turns
+        # compressed = [summary_user, ack_assistant] + 6 recent = 8
+>>>>>>> feat/spec-tree-plan
         assert compressed[0]["role"] == "user"
         assert "<summary>" in compressed[0]["content"]
         assert compressed[1]["role"] == "assistant"
@@ -154,8 +162,12 @@ class TestCompressionTurnBoundariesE2E:
         # Turn 5: simple
         turn5 = _make_simple_turn("Another task", "Sure!")
 
+<<<<<<< HEAD
         # Turn 6: simple
         turn6 = _make_simple_turn("More work", "Done!")
+=======
+        compressed, _, _ = await agent._compress_messages(messages)
+>>>>>>> feat/spec-tree-plan
 
         # Turn 7: current question
         messages = turn1 + turn2 + turn3 + turn4 + turn5 + turn6 + [{"role": "user", "content": "What model?"}]
@@ -205,7 +217,11 @@ class TestCompressionTurnBoundariesE2E:
         turn3 = _make_simple_turn("Turn 3", "Done 3")
         turn4 = _make_simple_turn("Turn 4", "Done 4")
 
+<<<<<<< HEAD
         messages = turn1 + turn2 + turn3 + turn4
+=======
+        messages = turn1 + turn2 + turn3
+>>>>>>> feat/spec-tree-plan
         compressed, _, _ = await agent._compress_messages(messages)
 
         # Summary message exists
@@ -527,7 +543,11 @@ class TestCompressionSummaryFormatE2E:
         turn7 = _make_simple_turn("T7", "Done7")
         turn8 = _make_simple_turn("T8", "Done8")
 
+<<<<<<< HEAD
         messages = turn1 + turn2 + turn3 + turn4 + turn5 + turn6 + turn7 + turn8
+=======
+        messages = turn1 + turn2 + turn3 + turn4
+>>>>>>> feat/spec-tree-plan
         compressed, _, _ = await agent._compress_messages(messages)
 
         # Extract recent portion (skip summary + ack)
@@ -670,20 +690,31 @@ class TestPublishedSessionFullMessagesE2E:
         )
         assert resp.status_code == 200
 
+<<<<<<< HEAD
     @patch("app.api.v1.published.pre_compress_if_needed", new_callable=AsyncMock, return_value=[])
     @patch("app.api.v1.published.save_session_checkpoint", new_callable=AsyncMock)
+=======
+>>>>>>> feat/spec-tree-plan
     @patch("app.api.v1.published.save_session_messages", new_callable=AsyncMock)
     @patch("app.api.v1.published.load_or_create_session", new_callable=AsyncMock)
     @patch("app.api.v1.published.SkillsAgent")
     @patch("app.api.v1.published.AsyncSessionLocal")
     async def test_02_streaming_saves_full_messages(
+<<<<<<< HEAD
         self, MockSL, MockAgent, MockLoadSession, _mock_save, MockCheckpoint, MockPreCompress, e2e_client: AsyncClient,
+=======
+        self, MockSL, MockAgent, MockLoadSession, _mock_save, e2e_client: AsyncClient,
+>>>>>>> feat/spec-tree-plan
     ):
         """Streaming chat saves final_messages (with tool_use/tool_result) to session."""
         pid = type(self)._state["preset_id"]
         session_id = str(uuid.uuid4())
         type(self)._state["session_id"] = session_id
+<<<<<<< HEAD
         MockLoadSession.return_value = SessionData(session_id=session_id)
+=======
+        MockLoadSession.return_value = (session_id, None)
+>>>>>>> feat/spec-tree-plan
 
         # Build final_messages with tool context
         final_msgs = [
@@ -831,14 +862,21 @@ class TestPublishedSessionFullMessagesE2E:
         assert fm[3]["role"] == "assistant"
         assert fm[3]["content"][0]["type"] == "text"
 
+<<<<<<< HEAD
     @patch("app.api.v1.published.pre_compress_if_needed", new_callable=AsyncMock, return_value=[])
     @patch("app.api.v1.published.save_session_checkpoint", new_callable=AsyncMock)
+=======
+>>>>>>> feat/spec-tree-plan
     @patch("app.api.v1.published.save_session_messages", new_callable=AsyncMock)
     @patch("app.api.v1.published.load_or_create_session", new_callable=AsyncMock)
     @patch("app.api.v1.published.SkillsAgent")
     @patch("app.api.v1.published.AsyncSessionLocal")
     async def test_03_nonstreaming_saves_full_messages(
+<<<<<<< HEAD
         self, MockSL, MockAgent, MockLoadSession, _mock_save, MockCheckpoint, MockPreCompress, e2e_client: AsyncClient,
+=======
+        self, MockSL, MockAgent, MockLoadSession, _mock_save, e2e_client: AsyncClient,
+>>>>>>> feat/spec-tree-plan
     ):
         """Non-streaming chat also saves final_messages to session."""
         pid = type(self)._state["preset_id"]
@@ -852,7 +890,11 @@ class TestPublishedSessionFullMessagesE2E:
         assert resp.status_code == 200
 
         session_id = str(uuid.uuid4())
+<<<<<<< HEAD
         MockLoadSession.return_value = SessionData(session_id=session_id)
+=======
+        MockLoadSession.return_value = (session_id, None)
+>>>>>>> feat/spec-tree-plan
 
         final_msgs = [
             {"role": "user", "content": "Hello"},

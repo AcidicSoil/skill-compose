@@ -81,7 +81,10 @@ export function SessionSidebar({
   isRunning,
 }: SessionSidebarProps) {
   const { t } = useTranslation('chat');
+<<<<<<< HEAD
   const { t: tc } = useTranslation('common');
+=======
+>>>>>>> feat/spec-tree-plan
   const { data, isLoading } = usePublishedSessions({ agentId, limit: 50 });
   const deleteMutation = useDeletePublishedSession();
   const [deletingId, setDeletingId] = useState<string | null>(null);
@@ -154,7 +157,10 @@ export function SessionSidebar({
                     onSelect={() => onSessionSelect(session.id)}
                     onDelete={() => handleDelete(session.id)}
                     t={t}
+<<<<<<< HEAD
                     tc={tc}
+=======
+>>>>>>> feat/spec-tree-plan
                   />
                 ))}
               </div>
@@ -174,7 +180,10 @@ function SessionItem({
   onSelect,
   onDelete,
   t,
+<<<<<<< HEAD
   tc,
+=======
+>>>>>>> feat/spec-tree-plan
 }: {
   session: SessionListItem;
   isActive: boolean;
@@ -183,11 +192,18 @@ function SessionItem({
   onSelect: () => void;
   onDelete: () => void;
   t: (key: string, options?: Record<string, unknown>) => string;
+<<<<<<< HEAD
   tc: (key: string, options?: Record<string, unknown>) => string;
 }) {
   const preview = session.first_user_message || t('published.sidebar.emptyMessage');
   const msgCount = session.message_count;
   const timeAgo = formatRelativeTime(session.updated_at, tc);
+=======
+}) {
+  const preview = session.first_user_message || t('published.sidebar.emptyMessage');
+  const msgCount = session.message_count;
+  const timeAgo = formatRelativeTime(session.updated_at);
+>>>>>>> feat/spec-tree-plan
 
   return (
     <div

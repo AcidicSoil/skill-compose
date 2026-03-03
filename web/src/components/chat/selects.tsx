@@ -10,8 +10,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+<<<<<<< HEAD
 import { useTranslation } from '@/i18n/client';
 import { getAgentDisplayName } from '@/lib/seed-descriptions';
+=======
+>>>>>>> feat/spec-tree-plan
 
 // ─── Types ───────────────────────────────────────────────
 
@@ -120,7 +123,10 @@ export const AgentPresetSelect = React.memo(function AgentPresetSelect({
   placeholder = 'Custom Config',
   'aria-label': ariaLabel = 'Agent',
 }: AgentPresetSelectProps) {
+<<<<<<< HEAD
   const { t } = useTranslation('agents');
+=======
+>>>>>>> feat/spec-tree-plan
   const handleChange = (val: string) => {
     onChange(val === '__custom__' ? null : val);
   };
@@ -134,7 +140,11 @@ export const AgentPresetSelect = React.memo(function AgentPresetSelect({
         <SelectItem value="__custom__">{placeholder}</SelectItem>
         {presets.map((preset) => (
           <SelectItem key={preset.id} value={preset.id}>
+<<<<<<< HEAD
             {getAgentDisplayName(t, preset.name)}
+=======
+            {preset.name}
+>>>>>>> feat/spec-tree-plan
           </SelectItem>
         ))}
       </SelectContent>
@@ -146,7 +156,11 @@ export const AgentPresetSelect = React.memo(function AgentPresetSelect({
 
 interface ExecutorSelectProps {
   value: string | null;
+<<<<<<< HEAD
   onChange: (executorName: string | null) => void;
+=======
+  onChange: (executorId: string | null) => void;
+>>>>>>> feat/spec-tree-plan
   executors: Executor[];
   size?: SelectSize;
   className?: string;
@@ -181,8 +195,13 @@ export const ExecutorSelect = React.memo(function ExecutorSelect({
         <SelectItem value="__local__">{placeholder}</SelectItem>
         {executors.map((executor) => (
           <SelectItem
+<<<<<<< HEAD
             key={executor.name}
             value={executor.name}
+=======
+            key={executor.id}
+            value={executor.id}
+>>>>>>> feat/spec-tree-plan
             disabled={!showAll && executor.status !== 'online'}
           >
             {executor.name}

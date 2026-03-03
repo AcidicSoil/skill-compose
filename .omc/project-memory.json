@@ -1,0 +1,297 @@
+{
+  "version": "1.0.0",
+  "lastScanned": 1772328115463,
+  "projectRoot": "/home/user/projects/temp/ai-apps/skill-compose",
+  "techStack": {
+    "languages": [
+      {
+        "name": "Python",
+        "version": null,
+        "confidence": "high",
+        "markers": [
+          "pyproject.toml",
+          "requirements.txt"
+        ]
+      }
+    ],
+    "frameworks": [
+      {
+        "name": "fastapi",
+        "version": null,
+        "category": "backend"
+      },
+      {
+        "name": "pytest",
+        "version": null,
+        "category": "testing"
+      }
+    ],
+    "packageManager": "pip",
+    "runtime": null
+  },
+  "build": {
+    "buildCommand": null,
+    "testCommand": "pytest",
+    "lintCommand": "ruff check",
+    "devCommand": null,
+    "scripts": {}
+  },
+  "conventions": {
+    "namingStyle": "snake_case",
+    "importStyle": null,
+    "testPattern": null,
+    "fileOrganization": null
+  },
+  "structure": {
+    "isMonorepo": false,
+    "workspaces": [],
+    "mainDirectories": [
+      "app",
+      "docs",
+      "scripts",
+      "tests"
+    ],
+    "gitBranches": null
+  },
+  "customNotes": [],
+  "directoryMap": {
+    "app": {
+      "path": "app",
+      "purpose": "Application code",
+      "fileCount": 3,
+      "lastAccessed": 1772328115452,
+      "keyFiles": [
+        "__init__.py",
+        "config.py",
+        "main.py"
+      ]
+    },
+    "config": {
+      "path": "config",
+      "purpose": "Configuration files",
+      "fileCount": 8,
+      "lastAccessed": 1772328115454,
+      "keyFiles": [
+        "executors.json",
+        "executors.json.example",
+        "mcp-secrets.json",
+        "mcp.json",
+        "mcp.json.example"
+      ]
+    },
+    "data": {
+      "path": "data",
+      "purpose": "Data files",
+      "fileCount": 1,
+      "lastAccessed": 1772328115454,
+      "keyFiles": [
+        "skills_registry.db"
+      ]
+    },
+    "docker": {
+      "path": "docker",
+      "purpose": null,
+      "fileCount": 8,
+      "lastAccessed": 1772328115455,
+      "keyFiles": [
+        "Makefile",
+        "docker-compose.yaml",
+        "init.sh",
+        "rebuild.sh",
+        "test_session.sh"
+      ]
+    },
+    "docs": {
+      "path": "docs",
+      "purpose": "Documentation",
+      "fileCount": 6,
+      "lastAccessed": 1772328115455,
+      "keyFiles": [
+        "README.md",
+        "docusaurus.config.ts",
+        "package.json",
+        "sidebars.ts",
+        "tsconfig.json"
+      ]
+    },
+    "scripts": {
+      "path": "scripts",
+      "purpose": "Build/utility scripts",
+      "fileCount": 4,
+      "lastAccessed": 1772328115456,
+      "keyFiles": [
+        "backup.sh",
+        "restart-dev.sh",
+        "restore.sh",
+        "run-tests.sh"
+      ]
+    },
+    "skills": {
+      "path": "skills",
+      "purpose": null,
+      "fileCount": 1,
+      "lastAccessed": 1772328115456,
+      "keyFiles": []
+    },
+    "tests": {
+      "path": "tests",
+      "purpose": "Test files",
+      "fileCount": 6,
+      "lastAccessed": 1772328115456,
+      "keyFiles": [
+        "README.md",
+        "TESTING_GUIDE.md",
+        "__init__.py",
+        "conftest.py",
+        "factories.py"
+      ]
+    },
+    "uploads": {
+      "path": "uploads",
+      "purpose": null,
+      "fileCount": 0,
+      "lastAccessed": 1772328115457,
+      "keyFiles": []
+    },
+    "web": {
+      "path": "web",
+      "purpose": null,
+      "fileCount": 9,
+      "lastAccessed": 1772328115457,
+      "keyFiles": [
+        "components.json",
+        "next-env.d.ts",
+        "next.config.js",
+        "package-lock.json",
+        "package.json"
+      ]
+    },
+    "app/api": {
+      "path": "app/api",
+      "purpose": "API routes",
+      "fileCount": 1,
+      "lastAccessed": 1772328115457,
+      "keyFiles": [
+        "__init__.py"
+      ]
+    },
+    "app/models": {
+      "path": "app/models",
+      "purpose": "Data models",
+      "fileCount": 4,
+      "lastAccessed": 1772328115458,
+      "keyFiles": [
+        "__init__.py",
+        "package.py",
+        "request.py"
+      ]
+    },
+    "docker/api": {
+      "path": "docker/api",
+      "purpose": "API routes",
+      "fileCount": 2,
+      "lastAccessed": 1772328115458,
+      "keyFiles": [
+        "Dockerfile",
+        "entrypoint.sh"
+      ]
+    },
+    "docker/docs": {
+      "path": "docker/docs",
+      "purpose": "Documentation",
+      "fileCount": 1,
+      "lastAccessed": 1772328115458,
+      "keyFiles": [
+        "Dockerfile"
+      ]
+    },
+    "docs/docs": {
+      "path": "docs/docs",
+      "purpose": "Documentation",
+      "fileCount": 4,
+      "lastAccessed": 1772328115459,
+      "keyFiles": [
+        "development-setup.md",
+        "faq.md",
+        "introduction.md"
+      ]
+    },
+    "docs/examples": {
+      "path": "docs/examples",
+      "purpose": "Example code",
+      "fileCount": 4,
+      "lastAccessed": 1772328115459,
+      "keyFiles": [
+        "article-to-slides-agent.gif",
+        "chemscout-agent.gif",
+        "evolve-your-agent.gif"
+      ]
+    },
+    "docs/src": {
+      "path": "docs/src",
+      "purpose": "Source code",
+      "fileCount": 0,
+      "lastAccessed": 1772328115460,
+      "keyFiles": []
+    },
+    "docs/static": {
+      "path": "docs/static",
+      "purpose": "Static files",
+      "fileCount": 1,
+      "lastAccessed": 1772328115460,
+      "keyFiles": []
+    },
+    "tests/mocks": {
+      "path": "tests/mocks",
+      "purpose": "Mock data",
+      "fileCount": 3,
+      "lastAccessed": 1772328115460,
+      "keyFiles": [
+        "__init__.py",
+        "mock_anthropic.py",
+        "mock_code_executor.py"
+      ]
+    },
+    "tests/scripts": {
+      "path": "tests/scripts",
+      "purpose": "Build/utility scripts",
+      "fileCount": 2,
+      "lastAccessed": 1772328115461,
+      "keyFiles": [
+        "run_all_tests.sh",
+        "setup_test_db.sh"
+      ]
+    },
+    "web/node_modules": {
+      "path": "web/node_modules",
+      "purpose": "Dependencies",
+      "fileCount": 1,
+      "lastAccessed": 1772328115463,
+      "keyFiles": []
+    },
+    "web/public": {
+      "path": "web/public",
+      "purpose": "Public files",
+      "fileCount": 1,
+      "lastAccessed": 1772328115463,
+      "keyFiles": [
+        "logo.png"
+      ]
+    }
+  },
+  "hotPaths": [
+    {
+      "path": ".claude/tasks/task-001-multi-skill-directory-import.md",
+      "accessCount": 1,
+      "lastAccessed": 1772330788014,
+      "type": "file"
+    },
+    {
+      "path": ".claude/tasks/task-002-skill-composer-spec-tree.md",
+      "accessCount": 1,
+      "lastAccessed": 1772330788029,
+      "type": "file"
+    }
+  ],
+  "userDirectives": []
+}

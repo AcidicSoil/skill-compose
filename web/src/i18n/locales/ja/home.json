@@ -65,9 +65,15 @@
     "executions": "実行回数"
   },
   "quickActions": {
+<<<<<<< HEAD
     "findSkills": {
       "title": "スキルを探す",
       "description": "コミュニティスキルを発見"
+=======
+    "browseSkills": {
+      "title": "スキルを閲覧",
+      "description": "スキルライブラリを管理"
+>>>>>>> feat/spec-tree-plan
     },
     "createSkill": {
       "title": "スキルを作成",

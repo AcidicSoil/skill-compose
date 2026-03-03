@@ -1,5 +1,9 @@
 "use client";
 
+<<<<<<< HEAD
+=======
+import React from "react";
+>>>>>>> feat/spec-tree-plan
 import { useRouter } from "next/navigation";
 import { CheckCircle, XCircle, AlertTriangle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -17,6 +21,34 @@ export interface ImportResult {
   skipped_files?: string[];
 }
 
+<<<<<<< HEAD
+=======
+export interface BulkImportResultItem {
+  success: boolean;
+  skill_name: string;
+  version: string;
+  message: string;
+  status: string;
+  conflict?: boolean;
+  existing_skill?: string;
+  existing_version?: string;
+  skipped_files?: string[];
+}
+
+export interface BulkImportResult {
+  results: BulkImportResultItem[];
+  total_imported: number;
+  total_skipped: number;
+  total_failed: number;
+}
+
+export function isBulkImportResult(
+  result: ImportResult | BulkImportResult | null | undefined
+): result is BulkImportResult {
+  return !!result && Array.isArray((result as BulkImportResult).results);
+}
+
+>>>>>>> feat/spec-tree-plan
 export function ImportErrorDisplay({ error }: { error: string }) {
   const { t } = useTranslation("import");
 
@@ -67,3 +99,60 @@ export function ImportSuccessDisplay({ result }: { result: ImportResult }) {
     </div>
   );
 }
+<<<<<<< HEAD
+=======
+
+export function BulkImportSuccessDisplay({ result }: { result: BulkImportResult }) {
+  const { t } = useTranslation("import");
+
+  return (
+    <div className="flex items-start gap-3 p-4 bg-green-50 border border-green-200 rounded-lg dark:bg-green-950 dark:border-green-800">
+      <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
+      <div className="flex-1 space-y-3">
+        <p className="font-medium text-green-800 dark:text-green-200">{t("status.importSuccess")}</p>
+        <div className="flex flex-wrap gap-2">
+          <Badge variant="outline-success">{t("status.bulkImported", { count: result.total_imported })}</Badge>
+          <Badge variant="outline-warning">{t("status.bulkSkipped", { count: result.total_skipped })}</Badge>
+          <Badge variant="outline-error">{t("status.bulkFailed", { count: result.total_failed })}</Badge>
+        </div>
+        <div className="space-y-2">
+          {result.results.map((item, index) => (
+            <div
+              key={`${item.skill_name}-${item.status}-${index}`}
+              className="flex items-start justify-between gap-3 rounded border border-border/60 bg-background/60 px-3 py-2"
+            >
+              <div className="min-w-0">
+                <p className="font-medium break-words">{item.skill_name}</p>
+                <p className="text-sm text-muted-foreground break-words">{item.message}</p>
+              </div>
+              <Badge
+                variant={
+                  item.status === "imported"
+                    ? "outline-success"
+                    : item.status === "failed"
+                      ? "outline-error"
+                      : item.status === "conflict"
+                        ? "outline-warning"
+                        : "outline-info"
+                }
+              >
+                {item.status === "imported"
+                  ? t("status.resultImported")
+                  : item.status === "failed"
+                    ? t("status.resultFailed")
+                    : item.status === "conflict"
+                      ? t("status.resultConflict")
+                      : item.status === "skipped"
+                        ? t("status.resultSkipped")
+                        : item.status === "ready"
+                          ? t("status.resultReady")
+                          : item.status}
+              </Badge>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+>>>>>>> feat/spec-tree-plan

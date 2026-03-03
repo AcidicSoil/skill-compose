@@ -212,6 +212,10 @@ class TestRealCompressionE2E:
                 "content": f"Planet {i+1}: " + ("This planet has many moons and interesting features. " * 50),
             })
 
+<<<<<<< HEAD
+=======
+        from app.db.models import PublishedSessionDB
+>>>>>>> feat/spec-tree-plan
         from app.api.v1.sessions import CHAT_SENTINEL_AGENT_ID
         _AsyncSessionLocal = e2e_session_factories["async"]
         async with _AsyncSessionLocal() as db:

@@ -100,7 +100,11 @@
 
 /* Homepage: dot-grid overlay pattern */
 .dot-grid {
+<<<<<<< HEAD
   background-image: radial-gradient(circle, hsl(var(--foreground) / 0.12) 1px, transparent 1px);
+=======
+  background-image: radial-gradient(circle, hsl(var(--foreground) / 0.06) 1px, transparent 1px);
+>>>>>>> feat/spec-tree-plan
   background-size: 24px 24px;
 }
 .dark .dot-grid {

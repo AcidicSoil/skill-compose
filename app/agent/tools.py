@@ -43,6 +43,34 @@ _PERSIST_DIR = Path(_settings.upload_dir)
 
 logger = logging.getLogger(__name__)
 
+logger = logging.getLogger(__name__)
+
+
+def _write_via_subprocess(filepath: Path, content: str) -> None:
+    """Write file via subprocess for Docker overlay2 filesystem consistency.
+
+    In Docker overlay2, files written by a parent process (API uvicorn worker)
+    may not be immediately visible to child subprocesses (bash, execute_code).
+    By writing via subprocess, the file is created in the same FS layer that
+    other subprocesses see, eliminating the visibility inconsistency.
+
+    Content is passed via stdin pipe to avoid shell quoting issues.
+    """
+    subprocess.run(
+        ['mkdir', '-p', str(filepath.parent)],
+        check=True, capture_output=True,
+    )
+    proc = subprocess.run(
+        ['sh', '-c', 'cat > "$1"', 'sh', str(filepath)],
+        input=content.encode('utf-8'),
+        capture_output=True,
+    )
+    if proc.returncode != 0:
+        raise IOError(
+            f"Subprocess write failed (exit {proc.returncode}): "
+            f"{proc.stderr.decode(errors='replace')}"
+        )
+
 
 def _write_via_subprocess(filepath: Path, content: str) -> None:
     """Write file via subprocess for Docker overlay2 filesystem consistency.

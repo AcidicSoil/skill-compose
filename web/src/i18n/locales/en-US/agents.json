@@ -26,8 +26,12 @@
   "detail": {
     "tabs": {
       "overview": "Overview",
+<<<<<<< HEAD
       "configuration": "Configuration",
       "memory": "Memory"
+=======
+      "configuration": "Configuration"
+>>>>>>> feat/spec-tree-plan
     },
     "overview": "Overview",
     "configuration": "Configuration",

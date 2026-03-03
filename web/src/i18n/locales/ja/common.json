@@ -13,9 +13,12 @@
     "terminal": "ターミナル",
     "sessions": "セッション",
     "more": "その他",
+<<<<<<< HEAD
     "accounts": "アカウント管理",
     "scheduledTasks": "スケジュールタスク",
     "channels": "チャンネル",
+=======
+>>>>>>> feat/spec-tree-plan
     "groupMonitor": "モニター",
     "groupSystem": "システム"
   },

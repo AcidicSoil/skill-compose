@@ -36,7 +36,11 @@ export interface AgentFormValues {
   max_turns: number;
   model_provider: string | null;
   model_name: string | null;
+<<<<<<< HEAD
   executor_name: string | null;
+=======
+  executor_id: string | null;
+>>>>>>> feat/spec-tree-plan
 }
 
 interface AgentConfigFormProps {
@@ -81,7 +85,11 @@ export function AgentConfigForm({
   const [maxTurns, setMaxTurns] = useState(initialValues?.max_turns || 60);
   const [selectedModelProvider, setSelectedModelProvider] = useState<string | null>(initialValues?.model_provider || null);
   const [selectedModelName, setSelectedModelName] = useState<string | null>(initialValues?.model_name || null);
+<<<<<<< HEAD
   const [selectedExecutorName, setSelectedExecutorName] = useState<string | null>(initialValues?.executor_name || null);
+=======
+  const [selectedExecutorId, setSelectedExecutorId] = useState<string | null>(initialValues?.executor_id || null);
+>>>>>>> feat/spec-tree-plan
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [internalHasChanges, setInternalHasChanges] = useState(false);
 
@@ -170,7 +178,11 @@ export function AgentConfigForm({
       setMaxTurns(initialValues.max_turns || 60);
       setSelectedModelProvider(initialValues.model_provider || null);
       setSelectedModelName(initialValues.model_name || null);
+<<<<<<< HEAD
       setSelectedExecutorName(initialValues.executor_name || null);
+=======
+      setSelectedExecutorId(initialValues.executor_id || null);
+>>>>>>> feat/spec-tree-plan
     }
   }, [initialValues]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -235,7 +247,11 @@ export function AgentConfigForm({
       max_turns: maxTurns,
       model_provider: selectedModelProvider,
       model_name: selectedModelName,
+<<<<<<< HEAD
       executor_name: selectedExecutorName,
+=======
+      executor_id: selectedExecutorId,
+>>>>>>> feat/spec-tree-plan
     });
   };
 
@@ -397,8 +413,13 @@ export function AgentConfigForm({
         <div className="space-y-2">
           <Label>{t('create.executorLabel')}</Label>
           <ExecutorSelect
+<<<<<<< HEAD
             value={selectedExecutorName}
             onChange={(id) => handleFieldChange(setSelectedExecutorName, id)}
+=======
+            value={selectedExecutorId}
+            onChange={(id) => handleFieldChange(setSelectedExecutorId, id)}
+>>>>>>> feat/spec-tree-plan
             executors={executors}
             placeholder={t('create.executorLocal')}
             disabled={isProcessing}

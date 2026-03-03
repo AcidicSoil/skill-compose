@@ -1,17 +1,24 @@
 'use client';
 
 import { useState } from 'react';
+<<<<<<< HEAD
 import { Globe, Copy, Check, ExternalLink, ChevronDown, Loader2, AlertTriangle } from 'lucide-react';
+=======
+import { Globe, Copy, Check, ExternalLink, ChevronDown, Loader2 } from 'lucide-react';
+>>>>>>> feat/spec-tree-plan
 import { useTranslation } from '@/i18n/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+<<<<<<< HEAD
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+=======
+>>>>>>> feat/spec-tree-plan
 
 interface PublishCardProps {
   preset: {
@@ -21,13 +28,20 @@ interface PublishCardProps {
     api_response_mode?: string | null;
   };
   isUnpublishing?: boolean;
+<<<<<<< HEAD
   executorOffline?: boolean;
   executorName?: string;
+=======
+>>>>>>> feat/spec-tree-plan
   onPublish: () => void;
   onUnpublish: () => void;
 }
 
+<<<<<<< HEAD
 export function PublishCard({ preset, isUnpublishing, executorOffline, executorName, onPublish, onUnpublish }: PublishCardProps) {
+=======
+export function PublishCard({ preset, isUnpublishing, onPublish, onUnpublish }: PublishCardProps) {
+>>>>>>> feat/spec-tree-plan
   const { t } = useTranslation('agents');
   const [copiedUrl, setCopiedUrl] = useState<string | null>(null);
   const [showApiUsage, setShowApiUsage] = useState(false);
@@ -172,6 +186,7 @@ export function PublishCard({ preset, isUnpublishing, executorOffline, executorN
             <h3 className="font-semibold">{t('publish.title')}</h3>
             <p className="text-sm text-muted-foreground">{t('detail.publishDescription')}</p>
           </div>
+<<<<<<< HEAD
           {executorOffline ? (
             <TooltipProvider>
               <Tooltip>
@@ -204,6 +219,13 @@ export function PublishCard({ preset, isUnpublishing, executorOffline, executorN
             {t('publish.executorOfflineWarning', { name: executorName })}
           </p>
         )}
+=======
+          <Button onClick={onPublish}>
+            <Globe className="mr-2 h-4 w-4" />
+            {t('publish.title')}
+          </Button>
+        </div>
+>>>>>>> feat/spec-tree-plan
       </CardContent>
     </Card>
   );

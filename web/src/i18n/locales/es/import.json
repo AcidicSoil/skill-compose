@@ -44,6 +44,16 @@
       "notFolder": "Suelte una carpeta, no un archivo. Use la pestaña 'Subir Archivo' para archivos .skill/.zip.",
       "noSkillMd": "La carpeta debe contener un archivo SKILL.md en el nivel raíz",
       "readFailed": "Error al leer el contenido de la carpeta"
+    },
+    "multi": {
+      "label": "Importación de múltiples skills",
+      "detectedSkills": "{{count}} skill(s) detectado(s)"
+    },
+    "conflict": {
+      "label": "Estrategia de conflicto",
+      "skip": "Omitir existentes",
+      "copy": "Crear copia",
+      "overwrite": "Sobrescribir"
     }
   },
   "status": {
@@ -55,7 +65,15 @@
     "genericError": "Error en la importación",
     "githubError": "Error en la importación desde GitHub",
     "skippedFiles": "{{count}} archivo(s) omitido(s) (tipos no soportados: artefactos compilados como .exe, .dll, .so)",
-    "skippedFilesList": "Omitidos: {{files}}"
+    "skippedFilesList": "Omitidos: {{files}}",
+    "bulkImported": "{{count}} importado(s)",
+    "bulkSkipped": "{{count}} omitido(s)",
+    "bulkFailed": "{{count}} fallido(s)",
+    "resultImported": "Importado",
+    "resultSkipped": "Omitido",
+    "resultFailed": "Fallido",
+    "resultConflict": "Conflicto",
+    "resultReady": "Listo"
   },
   "about": {
     "title": "Acerca de la Importación de Skills",

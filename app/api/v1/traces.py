@@ -261,7 +261,10 @@ def _trace_to_export_dict(trace: AgentTraceDB) -> dict:
         "created_at": trace.created_at.isoformat() if trace.created_at else None,
         "duration_ms": trace.duration_ms,
         "executor_name": trace.executor_name,
+<<<<<<< HEAD
         "session_id": trace.session_id,
+=======
+>>>>>>> feat/spec-tree-plan
     }
 
 

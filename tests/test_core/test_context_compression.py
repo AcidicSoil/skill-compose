@@ -322,7 +322,11 @@ class TestCompressMessages:
         )
         agent.client = create_mock_llm_client([summary_response])
 
+<<<<<<< HEAD
         messages = _build_tool_conversation(8)  # 32 messages (4 per pair), 8 > MAX_RECENT_TURNS=5
+=======
+        messages = _build_tool_conversation(5)  # 20 messages (4 per pair)
+>>>>>>> feat/spec-tree-plan
         compressed, s_in, s_out = await agent._compress_messages(messages)
 
         assert len(compressed) < len(messages)
@@ -403,6 +407,7 @@ class TestCompressMessages:
 
 
 # ===========================================================================
+<<<<<<< HEAD
 # _extract_file_operations
 # ===========================================================================
 
@@ -919,6 +924,11 @@ class TestStandaloneIterativeCompression:
 # Integration: run() with compression (async)
 # ===========================================================================
 
+=======
+# Integration: run() with compression (async)
+# ===========================================================================
+
+>>>>>>> feat/spec-tree-plan
 @pytest.mark.asyncio
 class TestRunWithCompression:
     async def test_compression_triggered_in_run(self):

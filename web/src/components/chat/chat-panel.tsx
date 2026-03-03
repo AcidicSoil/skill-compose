@@ -3,7 +3,11 @@
 import React from "react";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
+<<<<<<< HEAD
 import { RotateCcw, Paperclip, X, Wrench, Plug, ChevronDown, ChevronUp, Square, Bot, Cpu, Maximize2, Server, Plus, Settings, AlertTriangle } from "lucide-react";
+=======
+import { RotateCcw, Paperclip, X, Wrench, Plug, ChevronDown, ChevronUp, Square, Bot, Cpu, Maximize2, Server, Navigation, Plus, Settings } from "lucide-react";
+>>>>>>> feat/spec-tree-plan
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
@@ -18,7 +22,10 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { MultiSelect } from "@/components/ui/multi-select";
+<<<<<<< HEAD
 import { toast } from "sonner";
+=======
+>>>>>>> feat/spec-tree-plan
 import { skillsApi, agentApi, mcpApi, toolsApi, agentPresetsApi, modelsApi, executorsApi } from "@/lib/api";
 import type { StreamEvent } from "@/lib/api";
 import { useChatStore, REQUIRED_TOOLS } from "@/stores/chat-store";
@@ -27,8 +34,11 @@ import { useChatEngine } from "@/hooks/use-chat-engine";
 import { ChatMessageItem } from "./chat-message";
 import { ModelSelect, AgentPresetSelect, ExecutorSelect } from "./selects";
 import { useTranslation } from "@/i18n/client";
+<<<<<<< HEAD
 import { getSkillDescription } from "@/lib/seed-descriptions";
 import { generateUUID } from "@/lib/utils";
+=======
+>>>>>>> feat/spec-tree-plan
 
 interface ChatPanelProps {
   isOpen: boolean;
@@ -39,7 +49,10 @@ interface ChatPanelProps {
 export function ChatPanel({ isOpen, onClose, defaultSkills = [] }: ChatPanelProps) {
   const { t } = useTranslation('chat');
   const { t: tc } = useTranslation('common');
+<<<<<<< HEAD
   const { t: ts } = useTranslation('skills');
+=======
+>>>>>>> feat/spec-tree-plan
 
   // Use zustand store for persistence
   const {
@@ -79,7 +92,11 @@ export function ChatPanel({ isOpen, onClose, defaultSkills = [] }: ChatPanelProp
   // Restore session messages from server on mount
   useChatSessionRestore();
 
+<<<<<<< HEAD
   const [showConfigPanel, setShowConfigPanel] = React.useState(true);
+=======
+  const [showConfigPanel, setShowConfigPanel] = React.useState(false);
+>>>>>>> feat/spec-tree-plan
   const [showToolsPanel, setShowToolsPanel] = React.useState(false);
   const [showResetDialog, setShowResetDialog] = React.useState(false);
 
@@ -102,7 +119,11 @@ export function ChatPanel({ isOpen, onClose, defaultSkills = [] }: ChatPanelProp
         const state = useChatStore.getState();
         let currentSessionId = state.sessionId;
         if (!currentSessionId) {
+<<<<<<< HEAD
           currentSessionId = generateUUID();
+=======
+          currentSessionId = crypto.randomUUID();
+>>>>>>> feat/spec-tree-plan
           setSessionId(currentSessionId);
         }
 
@@ -126,7 +147,11 @@ export function ChatPanel({ isOpen, onClose, defaultSkills = [] }: ChatPanelProp
           const currentMcpServers = state.selectedMcpServers;
           const currentTools = state.selectedTools;
           const currentSystemPrompt = state.systemPrompt;
+<<<<<<< HEAD
           const currentExecutorName = state.selectedExecutorName;
+=======
+          const currentExecutorId = state.selectedExecutorId;
+>>>>>>> feat/spec-tree-plan
 
           const skillsList = currentSkills.length > 0 ? currentSkills : undefined;
           const mcpServersList = (currentMcpServers === null || currentMcpServers.length === 0) ? undefined : currentMcpServers;
@@ -143,7 +168,11 @@ export function ChatPanel({ isOpen, onClose, defaultSkills = [] }: ChatPanelProp
             system_prompt: currentSystemPrompt || undefined,
             model_provider: currentModelProvider || undefined,
             model_name: currentModelName || undefined,
+<<<<<<< HEAD
             executor_name: currentExecutorName || undefined,
+=======
+            executor_id: currentExecutorId || undefined,
+>>>>>>> feat/spec-tree-plan
           };
         }
 
@@ -154,6 +183,7 @@ export function ChatPanel({ isOpen, onClose, defaultSkills = [] }: ChatPanelProp
       },
     },
     onSessionId: (id) => setSessionId(id),
+<<<<<<< HEAD
     validateBeforeRun: () => {
       const state = useChatStore.getState();
       const effectiveProvider = state.selectedModelProvider || 'kimi';
@@ -166,6 +196,8 @@ export function ChatPanel({ isOpen, onClose, defaultSkills = [] }: ChatPanelProp
       }
       return null;
     },
+=======
+>>>>>>> feat/spec-tree-plan
   });
 
   // Fetch available data
@@ -230,6 +262,7 @@ export function ChatPanel({ isOpen, onClose, defaultSkills = [] }: ChatPanelProp
   const applyPreset = (presetId: string) => {
     const preset = agentPresets.find((p) => p.id === presetId);
     if (!preset) return;
+<<<<<<< HEAD
 
     // Warn if preset's executor is offline
     if (preset.executor_name) {
@@ -242,6 +275,8 @@ export function ChatPanel({ isOpen, onClose, defaultSkills = [] }: ChatPanelProp
 
     // Reset session so the new agent gets a fresh server-side session
     setSessionId(null);
+=======
+>>>>>>> feat/spec-tree-plan
     setSelectedAgentPreset(preset.id);
     setSelectedSkills(preset.skill_ids || []);
     setMaxTurns(preset.max_turns);
@@ -255,7 +290,11 @@ export function ChatPanel({ isOpen, onClose, defaultSkills = [] }: ChatPanelProp
     }
     setSelectedMcpServers(preset.mcp_servers || []);
     setSelectedModel(preset.model_provider || null, preset.model_name || null);
+<<<<<<< HEAD
     setSelectedExecutorName(preset.executor_name || null);
+=======
+    setSelectedExecutorId(preset.executor_id || null);
+>>>>>>> feat/spec-tree-plan
   };
 
   if (!isOpen) return null;
@@ -319,17 +358,28 @@ export function ChatPanel({ isOpen, onClose, defaultSkills = [] }: ChatPanelProp
           variant="ghost"
           size="sm"
           onClick={() => setShowConfigPanel(!showConfigPanel)}
+<<<<<<< HEAD
           className={`h-6 px-1 py-0 shrink-0 flex items-center gap-0.5 ${showConfigPanel ? 'text-primary' : ''}`}
           title={showConfigPanel ? t('hideConfig') : t('showConfig')}
         >
           <Settings className="h-3.5 w-3.5" />
           {showConfigPanel ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+=======
+          className={`h-6 w-6 p-0 shrink-0 ${showConfigPanel ? 'text-primary' : ''}`}
+          title={t('config')}
+        >
+          <Settings className="h-3.5 w-3.5" />
+>>>>>>> feat/spec-tree-plan
         </Button>
       </div>
 
       {/* Expanded Config Panel */}
       {showConfigPanel && (
+<<<<<<< HEAD
         <div className="px-4 py-3 border-b bg-muted/20 space-y-3 text-xs">
+=======
+        <div className="px-4 py-3 border-b bg-muted/20 space-y-3 text-xs max-h-[40vh] overflow-y-auto">
+>>>>>>> feat/spec-tree-plan
           {selectedAgentPreset && (
             <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
               <span>{t('configManagedByPreset')}</span>
@@ -343,8 +393,13 @@ export function ChatPanel({ isOpen, onClose, defaultSkills = [] }: ChatPanelProp
               <Server className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
               <span className="text-muted-foreground shrink-0">{t('configuration.executor')}:</span>
               <ExecutorSelect
+<<<<<<< HEAD
                 value={selectedExecutorName}
                 onChange={(id) => { setSelectedExecutorName(id); setSelectedAgentPreset(null); }}
+=======
+                value={selectedExecutorId}
+                onChange={(id) => { setSelectedExecutorId(id); setSelectedAgentPreset(null); }}
+>>>>>>> feat/spec-tree-plan
                 executors={onlineExecutors}
                 size="xs"
                 className="flex-1"
@@ -353,6 +408,7 @@ export function ChatPanel({ isOpen, onClose, defaultSkills = [] }: ChatPanelProp
               />
             </div>
           )}
+<<<<<<< HEAD
           {/* Offline executor warning for preset */}
           {selectedAgentPreset && (() => {
             const preset = agentPresets.find(p => p.id === selectedAgentPreset);
@@ -367,6 +423,8 @@ export function ChatPanel({ isOpen, onClose, defaultSkills = [] }: ChatPanelProp
               </p>
             );
           })()}
+=======
+>>>>>>> feat/spec-tree-plan
 
           {/* Turns + Skills */}
           <div className={`flex items-center gap-3 ${selectedAgentPreset ? 'opacity-50 pointer-events-none' : ''}`}>
@@ -381,7 +439,11 @@ export function ChatPanel({ isOpen, onClose, defaultSkills = [] }: ChatPanelProp
             <div className="flex items-center gap-1.5 flex-1 min-w-0">
               <span className="text-muted-foreground shrink-0">{t('configuration.skills')}</span>
               <MultiSelect
+<<<<<<< HEAD
                 options={skills.map((skill) => ({ value: skill.name, label: skill.name, description: getSkillDescription(ts, skill.name, skill.description)?.slice(0, 50) }))}
+=======
+                options={skills.map((skill) => ({ value: skill.name, label: skill.name, description: skill.description?.slice(0, 50) }))}
+>>>>>>> feat/spec-tree-plan
                 selected={selectedSkills}
                 onChange={(s) => { setSelectedSkills(s); setSelectedAgentPreset(null); }}
                 placeholder={t('configuration.selectSkills')}
@@ -405,7 +467,11 @@ export function ChatPanel({ isOpen, onClose, defaultSkills = [] }: ChatPanelProp
 
             {/* Tools/MCP Chips */}
             {showToolsPanel && (
+<<<<<<< HEAD
               <div className="mt-2 space-y-3 max-h-[30vh] overflow-y-auto">
+=======
+              <div className="mt-2 space-y-3">
+>>>>>>> feat/spec-tree-plan
                 <div>
                   <div className="flex items-center gap-2 mb-1.5">
                     <Wrench className="h-3 w-3 text-muted-foreground" />
@@ -490,8 +556,11 @@ export function ChatPanel({ isOpen, onClose, defaultSkills = [] }: ChatPanelProp
               streamingContent={message.id === engine.streamingMessageId ? engine.streamingContent : null}
               streamingEvents={message.id === engine.streamingMessageId ? engine.streamingEvents : undefined}
               streamingOutputFiles={message.id === engine.streamingMessageId ? engine.currentOutputFiles : undefined}
+<<<<<<< HEAD
               onAskUserRespond={engine.handleRespond}
               askUserAnswer={message.role === 'assistant' && messages[idx + 1]?.role === 'user' ? messages[idx + 1].content : undefined}
+=======
+>>>>>>> feat/spec-tree-plan
             />
           ))
         )}
@@ -519,7 +588,11 @@ export function ChatPanel({ isOpen, onClose, defaultSkills = [] }: ChatPanelProp
             value={engine.input}
             onChange={(e) => engine.setInput(e.target.value)}
             onKeyDown={engine.handleKeyDown}
+<<<<<<< HEAD
             placeholder={t('placeholder')}
+=======
+            placeholder={isRunning ? t('steering.placeholder') : t('placeholder')}
+>>>>>>> feat/spec-tree-plan
             className="min-h-[80px] resize-none"
           />
         </div>
@@ -538,12 +611,22 @@ export function ChatPanel({ isOpen, onClose, defaultSkills = [] }: ChatPanelProp
                 <Square className="h-4 w-4 mr-1" />
                 {t('stop')}
               </Button>
+<<<<<<< HEAD
               <Button onClick={() => engine.handleSubmit()} disabled={!engine.input.trim()} size="sm">
                 {t('send')}
               </Button>
             </div>
           ) : (
             <Button onClick={() => engine.handleSubmit()} disabled={!engine.input.trim()}>
+=======
+              <Button onClick={engine.handleSubmit} disabled={!engine.input.trim()} size="sm">
+                <Navigation className="h-4 w-4 mr-1" />
+                {t('steering.button')}
+              </Button>
+            </div>
+          ) : (
+            <Button onClick={engine.handleSubmit} disabled={!engine.input.trim()}>
+>>>>>>> feat/spec-tree-plan
               {t('send')}
             </Button>
           )}

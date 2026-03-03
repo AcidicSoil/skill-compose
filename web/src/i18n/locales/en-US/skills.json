@@ -317,7 +317,11 @@
     "evolutionComplete": "Evolution complete!",
     "viewSkill": "View Skill",
     "backToSelection": "Back to selection",
+<<<<<<< HEAD
     "agentNotFound": "agent-skill-evolver agent not found. Please restart the backend to seed it.",
+=======
+    "agentNotFound": "skill-evolve-helper agent not found. Please restart the backend to seed it.",
+>>>>>>> feat/spec-tree-plan
     "noUserSkills": "No user skills found.",
     "createOneFirst": "Create one first",
     "failedToRunAgent": "Failed to run agent",
@@ -329,9 +333,13 @@
       "turns": "Turns: {{count}}",
       "tokens": "Tokens: {{count}}",
       "duration": "Duration: {{duration}}s"
+<<<<<<< HEAD
     },
     "newChat": "New Chat",
     "history": "History"
+=======
+    }
+>>>>>>> feat/spec-tree-plan
   },
   "sync": {
     "title": "Filesystem Sync",
@@ -402,6 +410,7 @@
       "invalidJson": "Invalid JSON in {{name}}",
       "skillMdRequired": "SKILL.md content is required"
     }
+<<<<<<< HEAD
   },
   "seedDescriptions": {
     "skill-creator": "Guide for creating effective skills that extend agent capabilities with specialized knowledge, workflows, or tool integrations.",
@@ -438,5 +447,7 @@
     "twitter-algorithm-optimizer": "Analyze and optimize tweets for maximum reach using Twitter's open-source algorithm insights. Rewrite and edit tweets to improve engagement based on ranking signals.",
     "slack-gif-creator": "Toolkit for creating animated GIFs optimized for Slack. Validators for size constraints, composable animation primitives, and helper utilities for message and emoji GIFs.",
     "humanizer-zh": "Remove AI-generated writing traces from Chinese text. Detects and fixes patterns like exaggerated symbolism, promotional language, shallow analysis, vague attribution, dash overuse, rule-of-three abuse, and AI vocabulary. Based on Wikipedia's 'Signs of AI writing' guide."
+=======
+>>>>>>> feat/spec-tree-plan
   }
 }

@@ -15,8 +15,13 @@ import os
 from dataclasses import dataclass, field
 from typing import Any, AsyncGenerator, Dict, Generator, List, Optional
 
+<<<<<<< HEAD
 from app.config import read_env_value
 from app.llm.models import get_context_limit, get_max_output_tokens
+=======
+from app.config import get_settings
+from app.llm.models import get_context_limit
+>>>>>>> feat/spec-tree-plan
 
 
 # Provider base URLs for OpenAI-compatible APIs
@@ -122,12 +127,19 @@ class LLMClient:
         env_var = PROVIDER_API_KEY_MAP.get(provider, f"{provider.upper()}_API_KEY")
         return read_env_value(env_var)
 
+    def _resolve_base_url(self) -> Optional[str]:
+        """Resolve base URL for OpenAI-compatible providers."""
+        if self.provider == "openai":
+            value = get_settings().openai_base_url.strip()
+            return value or None
+        return PROVIDER_BASE_URLS.get(self.provider)
+
     def _get_openai_client(self):
         """Get or create OpenAI client for OpenAI-compatible providers."""
         if self._client is None:
             from openai import OpenAI
             import httpx
-            base_url = PROVIDER_BASE_URLS.get(self.provider)
+            base_url = self._resolve_base_url()
 
             # Generous timeout for long streaming responses
             timeout = httpx.Timeout(600.0, connect=10.0)
@@ -163,7 +175,11 @@ class LLMClient:
         if self._async_client is None:
             from openai import AsyncOpenAI
             import httpx
+<<<<<<< HEAD
             base_url = PROVIDER_BASE_URLS.get(self.provider)
+=======
+            base_url = self._resolve_base_url()
+>>>>>>> feat/spec-tree-plan
             timeout = httpx.Timeout(600.0, connect=10.0)
 
             if self.provider == "openrouter":
@@ -687,7 +703,13 @@ class LLMClient:
         max_tokens: int = 16384,
     ) -> LLMResponse:
         """Async version of create(). Same interface, uses async SDK clients."""
+<<<<<<< HEAD
         max_tokens = min(max_tokens, self.max_output_tokens)
+=======
+        provider_limit = PROVIDER_MAX_TOKENS.get(self.provider)
+        if provider_limit:
+            max_tokens = min(max_tokens, provider_limit)
+>>>>>>> feat/spec-tree-plan
 
         if self.provider == "anthropic":
             return await self._acreate_anthropic(messages, system, tools, max_tokens)
@@ -749,7 +771,13 @@ class LLMClient:
         max_tokens: int = 16384,
     ) -> AsyncGenerator[LLMResponse, None]:
         """Async version of create_stream(). Yields LLMResponse deltas, then final response."""
+<<<<<<< HEAD
         max_tokens = min(max_tokens, self.max_output_tokens)
+=======
+        provider_limit = PROVIDER_MAX_TOKENS.get(self.provider)
+        if provider_limit:
+            max_tokens = min(max_tokens, provider_limit)
+>>>>>>> feat/spec-tree-plan
 
         if self.provider == "anthropic":
             async for resp in self._acreate_stream_anthropic(messages, system, tools, max_tokens):
@@ -871,7 +899,11 @@ class LLMClient:
         for tc_data in accumulated_tool_calls.values():
             try:
                 args = json.loads(tc_data["arguments"])
+<<<<<<< HEAD
             except (json.JSONDecodeError, TypeError):
+=======
+            except:
+>>>>>>> feat/spec-tree-plan
                 args = {}
             content.append(LLMToolCall(
                 id=tc_data["id"],

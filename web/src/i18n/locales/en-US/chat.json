@@ -115,7 +115,10 @@
     "notAvailable": "This agent is not available.",
     "sessionId": "Session",
     "sessionIdCopied": "Session ID copied",
+<<<<<<< HEAD
     "loadingSession": "Loading conversation...",
+=======
+>>>>>>> feat/spec-tree-plan
     "sidebar": {
       "title": "History",
       "noSessions": "No conversations yet",
@@ -131,6 +134,7 @@
       "messagesCount": "{{count}} msg",
       "messagesCount_other": "{{count}} msgs"
     }
+<<<<<<< HEAD
   },
   "askUser": {
     "waitingForResponse": "Waiting for your response...",
@@ -138,5 +142,7 @@
     "typeAnswer": "Type your answer...",
     "submit": "Submit",
     "timedOut": "Response timed out"
+=======
+>>>>>>> feat/spec-tree-plan
   }
 }

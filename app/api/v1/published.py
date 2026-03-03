@@ -19,8 +19,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.agent import SkillsAgent, EventStream, write_steering_message, poll_steering_messages, cleanup_steering_dir
 from app.api.v1.agent import _finalize_trace
+<<<<<<< HEAD
 from app.api.v1.display_builder import DisplayMessageBuilder
 from app.api.v1.sessions import load_or_create_session, save_session_messages, save_session_checkpoint, save_session_checkpoint_sync, pre_compress_if_needed
+=======
+from app.api.v1.sessions import load_or_create_session, save_session_messages
+>>>>>>> feat/spec-tree-plan
 from app.config import get_settings
 from app.db.database import AsyncSessionLocal, get_db
 from app.db.models import AgentPresetDB, AgentTraceDB, PublishedSessionDB
@@ -328,6 +332,7 @@ async def steer_published_agent(
 
 
 async def _resolve_published_config(preset):
+<<<<<<< HEAD
     """Resolve config from a published preset, including executor name.
 
     Raises HTTPException if the executor is offline.
@@ -341,6 +346,18 @@ async def _resolve_published_config(preset):
                 status_code=503,
                 detail=f"Executor '{executor_name}' is offline. Published agent cannot process requests."
             )
+=======
+    """Resolve config from a published preset, including executor name."""
+    executor_name = None
+    if preset.executor_id:
+        async with AsyncSessionLocal() as db:
+            executor_result = await db.execute(
+                select(ExecutorDB).where(ExecutorDB.id == preset.executor_id)
+            )
+            executor = executor_result.scalar_one_or_none()
+            if executor:
+                executor_name = executor.name
+>>>>>>> feat/spec-tree-plan
 
     return {
         "skills": preset.skill_ids,
@@ -351,7 +368,10 @@ async def _resolve_published_config(preset):
         "model_provider": preset.model_provider,
         "model_name": preset.model_name,
         "executor_name": executor_name,
+<<<<<<< HEAD
         "is_meta_agent": preset.is_system,
+=======
+>>>>>>> feat/spec-tree-plan
     }
 
 
@@ -379,6 +399,7 @@ async def published_chat(agent_id: str, request: PublishedChatRequest):
 
         config = await _resolve_published_config(preset)
 
+<<<<<<< HEAD
     # Validate API key before proceeding
     from app.api.v1.agent import _validate_api_key
     _validate_api_key(config)
@@ -386,10 +407,16 @@ async def published_chat(agent_id: str, request: PublishedChatRequest):
     # Session management — published agents may omit session_id for auto-creation
     if request.session_id:
         session_data = await load_or_create_session(request.session_id, agent_id)
+=======
+    # Session management — published agents may omit session_id for auto-creation
+    if request.session_id:
+        session_id, history = await load_or_create_session(request.session_id, agent_id)
+>>>>>>> feat/spec-tree-plan
     else:
         # Auto-generate a session for published agents
         from app.db.models import generate_uuid
         auto_sid = generate_uuid()
+<<<<<<< HEAD
         session_data = await load_or_create_session(auto_sid, agent_id)
 
     session_id = session_data.session_id
@@ -401,6 +428,9 @@ async def published_chat(agent_id: str, request: PublishedChatRequest):
     pre_model = config.get("model_name") or settings.default_model_name
     if history:
         history = await pre_compress_if_needed(history, pre_provider, pre_model)
+=======
+        session_id, history = await load_or_create_session(auto_sid, agent_id)
+>>>>>>> feat/spec-tree-plan
 
     # Build actual request with file info and image blocks
     from app.api.v1.agent import _build_request_with_files
@@ -435,7 +465,10 @@ async def published_chat(agent_id: str, request: PublishedChatRequest):
                 llm_calls=[],
                 duration_ms=0,
                 executor_name=config.get("executor_name"),
+<<<<<<< HEAD
                 session_id=session_id,
+=======
+>>>>>>> feat/spec-tree-plan
             )
             trace_db.add(trace)
             await trace_db.commit()
@@ -454,8 +487,11 @@ async def published_chat(agent_id: str, request: PublishedChatRequest):
             equipped_mcp_servers=config["equipped_mcp_servers"],
             custom_system_prompt=config["system_prompt"],
             executor_name=config.get("executor_name"),
+<<<<<<< HEAD
             workspace_id=session_id,
             is_meta_agent=config.get("is_meta_agent", False),
+=======
+>>>>>>> feat/spec-tree-plan
         )
 
         event_stream = EventStream()
@@ -488,6 +524,7 @@ async def published_chat(agent_id: str, request: PublishedChatRequest):
 
         try:
             async for event in event_stream:
+<<<<<<< HEAD
                 # Heartbeat — SSE comment to keep connection alive through proxies
                 if event.event_type == "heartbeat":
                     yield ": heartbeat\n\n"
@@ -509,6 +546,8 @@ async def published_chat(agent_id: str, request: PublishedChatRequest):
                             pass  # fire-and-forget
                     continue
 
+=======
+>>>>>>> feat/spec-tree-plan
                 event_data = {
                     "event_type": event.event_type,
                     "turn": event.turn,
@@ -600,6 +639,7 @@ async def published_chat(agent_id: str, request: PublishedChatRequest):
                 "duration_ms": duration_ms,
             })
 
+<<<<<<< HEAD
             # Save full conversation messages to session (dual-store)
             if session_id:
                 if not was_cancelled and last_complete_event:
@@ -633,6 +673,16 @@ async def published_chat(agent_id: str, request: PublishedChatRequest):
                         )
                     except Exception:
                         pass
+=======
+            # Save full conversation messages to session
+            if not was_cancelled and session_id and last_complete_event:
+                await save_session_messages(
+                    session_id,
+                    final_answer,
+                    request.request,
+                    final_messages=last_complete_event.get("final_messages"),
+                )
+>>>>>>> feat/spec-tree-plan
 
         if not was_cancelled:
             yield f"data: {json.dumps({'event_type': 'trace_saved', 'turn': 0, 'trace_id': trace_id})}\n\n"
@@ -672,6 +722,7 @@ async def published_chat_sync(agent_id: str, request: PublishedChatRequest):
 
         config = await _resolve_published_config(preset)
 
+<<<<<<< HEAD
     # Validate API key before proceeding
     from app.api.v1.agent import _validate_api_key
     _validate_api_key(config)
@@ -692,6 +743,15 @@ async def published_chat_sync(agent_id: str, request: PublishedChatRequest):
     sync_model = config.get("model_name") or settings.default_model_name
     if history:
         history = await pre_compress_if_needed(history, sync_provider, sync_model)
+=======
+    # Session management — published agents may omit session_id for auto-creation
+    if request.session_id:
+        session_id, history = await load_or_create_session(request.session_id, agent_id)
+    else:
+        from app.db.models import generate_uuid
+        auto_sid = generate_uuid()
+        session_id, history = await load_or_create_session(auto_sid, agent_id)
+>>>>>>> feat/spec-tree-plan
 
     # Build actual request with file info and image blocks
     from app.api.v1.agent import _build_request_with_files
@@ -725,7 +785,10 @@ async def published_chat_sync(agent_id: str, request: PublishedChatRequest):
             llm_calls=[],
             duration_ms=0,
             executor_name=config.get("executor_name"),
+<<<<<<< HEAD
             session_id=session_id,
+=======
+>>>>>>> feat/spec-tree-plan
         )
         trace_db.add(trace)
         await trace_db.commit()
@@ -742,8 +805,11 @@ async def published_chat_sync(agent_id: str, request: PublishedChatRequest):
         equipped_mcp_servers=config["equipped_mcp_servers"],
         custom_system_prompt=config["system_prompt"],
         executor_name=config.get("executor_name"),
+<<<<<<< HEAD
         workspace_id=session_id,
         is_meta_agent=config.get("is_meta_agent", False),
+=======
+>>>>>>> feat/spec-tree-plan
     )
 
     try:
@@ -801,6 +867,7 @@ async def published_chat_sync(agent_id: str, request: PublishedChatRequest):
         )
         await trace_db.commit()
 
+<<<<<<< HEAD
     # Save full conversation messages to session (dual-store)
     # Save for both success and failure — user should see what happened on refresh.
     if session_id:
@@ -812,12 +879,20 @@ async def published_chat_sync(agent_id: str, request: PublishedChatRequest):
         else:
             new_display = None
 
+=======
+    # Save full conversation messages to session
+    if session_id and result_data.get("success"):
+>>>>>>> feat/spec-tree-plan
         await save_session_messages(
             session_id,
             result_data.get("answer", ""),
             request.request,
+<<<<<<< HEAD
             final_messages=final_msgs,
             display_append_messages=new_display,
+=======
+            final_messages=result_data.get("final_messages"),
+>>>>>>> feat/spec-tree-plan
         )
 
     return PublishedChatResponse(

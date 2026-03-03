@@ -2,6 +2,7 @@
 
 Used by both the agent (chat panel) and published agent endpoints
 to load/create/save server-side sessions via PublishedSessionDB.
+<<<<<<< HEAD
 
 Dual-store design:
 - `messages`: Append-only display history — never compressed, preserves all
@@ -14,18 +15,27 @@ import logging
 from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Optional, List
+=======
+"""
+from datetime import datetime
+from typing import Optional, Tuple, List
+>>>>>>> feat/spec-tree-plan
 
 from sqlalchemy import select, update
 
 from app.db.database import AsyncSessionLocal
 from app.db.models import PublishedSessionDB
 
+<<<<<<< HEAD
 logger = logging.getLogger("skills_api")
 
+=======
+>>>>>>> feat/spec-tree-plan
 # Sentinel agent_id for chat-panel sessions (not tied to a published agent)
 CHAT_SENTINEL_AGENT_ID = "__chat__"
 
 
+<<<<<<< HEAD
 @dataclass
 class SessionData:
     """Data returned from load_or_create_session."""
@@ -47,6 +57,18 @@ async def load_or_create_session(
     If the session exists but with a different agent_id (e.g. switching from
     custom chat to an agent preset), the session is reset for the new agent.
     """
+=======
+async def load_or_create_session(
+    session_id: str,
+    agent_id: str,
+) -> Tuple[str, Optional[List[dict]]]:
+    """Load existing session or create a new one.
+
+    Returns (session_id, history) where history is None for brand-new sessions.
+    """
+    history = None
+
+>>>>>>> feat/spec-tree-plan
     async with AsyncSessionLocal() as db:
         result = await db.execute(
             select(PublishedSessionDB).where(
@@ -57,6 +79,7 @@ async def load_or_create_session(
         session_record = result.scalar_one_or_none()
 
         if session_record:
+<<<<<<< HEAD
             display = session_record.messages or []
             # Fallback: if agent_context is NULL, use messages as starting context
             ctx = session_record.agent_context
@@ -96,6 +119,20 @@ async def load_or_create_session(
         await db.commit()
 
         return SessionData(session_id=session_id)
+=======
+            history = session_record.messages or []
+        else:
+            # Create new session with caller-provided ID
+            new_session = PublishedSessionDB(
+                id=session_id,
+                agent_id=agent_id,
+                messages=[],
+            )
+            db.add(new_session)
+            await db.commit()
+
+    return session_id, history
+>>>>>>> feat/spec-tree-plan
 
 
 async def save_session_messages(
@@ -103,6 +140,7 @@ async def save_session_messages(
     final_answer: str,
     request_text: str,
     final_messages: Optional[list] = None,
+<<<<<<< HEAD
     display_append_messages: Optional[list] = None,
     display_replace_messages: Optional[list] = None,
 ) -> None:
@@ -115,6 +153,14 @@ async def save_session_messages(
       partial display, so append would cause duplicates).  Otherwise
       *display_append_messages* are appended to the existing display history.
       If neither is provided, falls back to appending a simple user+assistant pair.
+=======
+) -> None:
+    """Save full conversation messages to session.
+
+    If *final_messages* is provided (the full Anthropic message list from the
+    agent run), it replaces the session messages entirely.  Otherwise we
+    append a simple user/assistant pair.
+>>>>>>> feat/spec-tree-plan
     """
     try:
         async with AsyncSessionLocal() as session_db:
@@ -124,6 +170,7 @@ async def save_session_messages(
                 )
             )
             session_record = result.scalar_one_or_none()
+<<<<<<< HEAD
             if not session_record:
                 return
 
@@ -263,3 +310,31 @@ async def pre_compress_if_needed(
     except Exception as e:
         logger.warning(f"[Pre-Compress] Failed: {e}, using original context")
         return agent_context
+=======
+            if session_record:
+                if final_messages:
+                    await session_db.execute(
+                        update(PublishedSessionDB)
+                        .where(PublishedSessionDB.id == session_id)
+                        .values(
+                            messages=final_messages,
+                            updated_at=datetime.utcnow(),
+                        )
+                    )
+                else:
+                    current_messages = session_record.messages or []
+                    current_messages.append({"role": "user", "content": request_text})
+                    if final_answer:
+                        current_messages.append({"role": "assistant", "content": final_answer})
+                    await session_db.execute(
+                        update(PublishedSessionDB)
+                        .where(PublishedSessionDB.id == session_id)
+                        .values(
+                            messages=current_messages,
+                            updated_at=datetime.utcnow(),
+                        )
+                    )
+                await session_db.commit()
+    except Exception:
+        pass  # Don't fail the response if session save fails
+>>>>>>> feat/spec-tree-plan

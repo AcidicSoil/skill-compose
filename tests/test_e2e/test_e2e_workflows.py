@@ -25,7 +25,10 @@ from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.agent.agent import StreamEvent
+<<<<<<< HEAD
 from app.api.v1.sessions import SessionData
+=======
+>>>>>>> feat/spec-tree-plan
 
 from tests.factories import make_skill, make_skill_version, make_skill_file, make_trace
 
@@ -529,8 +532,13 @@ class TestAgentPresetLifecycleE2E:
         assert body["max_turns"] == 20
 
     @patch("app.api.v1.agent.save_session_messages", new_callable=AsyncMock)
+<<<<<<< HEAD
     @patch("app.api.v1.agent.load_or_create_session", new_callable=AsyncMock, return_value=SessionData(session_id="test-session-id"))
     @patch("app.api.v1.agent.create_agent")
+=======
+    @patch("app.api.v1.agent.load_or_create_session", new_callable=AsyncMock, return_value=("test-session-id", None))
+    @patch("app.api.v1.agent.SkillsAgent")
+>>>>>>> feat/spec-tree-plan
     async def test_06_run_agent(self, MockAgent, _mock_load, _mock_save, e2e_client: AsyncClient):
         MockAgent.return_value = _make_mock_agent()
         resp = await e2e_client.post(
@@ -634,8 +642,13 @@ class TestAgentRunAndTraceE2E:
     _state: dict = {}
 
     @patch("app.api.v1.agent.save_session_messages", new_callable=AsyncMock)
+<<<<<<< HEAD
     @patch("app.api.v1.agent.load_or_create_session", new_callable=AsyncMock, return_value=SessionData(session_id="test-session-id"))
     @patch("app.api.v1.agent.create_agent")
+=======
+    @patch("app.api.v1.agent.load_or_create_session", new_callable=AsyncMock, return_value=("test-session-id", None))
+    @patch("app.api.v1.agent.SkillsAgent")
+>>>>>>> feat/spec-tree-plan
     async def test_01_run_simple(self, MockAgent, _mock_load, _mock_save, e2e_client: AsyncClient):
         MockAgent.return_value = _make_mock_agent()
         resp = await e2e_client.post(
@@ -672,8 +685,13 @@ class TestAgentRunAndTraceE2E:
             assert t["success"] is True
 
     @patch("app.api.v1.agent.save_session_messages", new_callable=AsyncMock)
+<<<<<<< HEAD
     @patch("app.api.v1.agent.load_or_create_session", new_callable=AsyncMock, return_value=SessionData(session_id="test-session-id"))
     @patch("app.api.v1.agent.create_agent")
+=======
+    @patch("app.api.v1.agent.load_or_create_session", new_callable=AsyncMock, return_value=("test-session-id", None))
+    @patch("app.api.v1.agent.SkillsAgent")
+>>>>>>> feat/spec-tree-plan
     async def test_05_run_with_skills_and_session(
         self, MockAgent, _mock_load, _mock_save, e2e_client: AsyncClient
     ):
@@ -691,14 +709,23 @@ class TestAgentRunAndTraceE2E:
         assert body["success"] is True
         type(self)._state["trace_id_2"] = body["trace_id"]
 
+<<<<<<< HEAD
     @patch("app.api.v1.agent.pre_compress_if_needed", new_callable=AsyncMock, return_value=[])
     @patch("app.api.v1.agent.save_session_checkpoint", new_callable=AsyncMock)
     @patch("app.api.v1.agent.save_session_messages", new_callable=AsyncMock)
     @patch("app.api.v1.agent.load_or_create_session", new_callable=AsyncMock, return_value=SessionData(session_id="test-session-id"))
+=======
+    @patch("app.api.v1.agent.save_session_messages", new_callable=AsyncMock)
+    @patch("app.api.v1.agent.load_or_create_session", new_callable=AsyncMock, return_value=("test-session-id", None))
+>>>>>>> feat/spec-tree-plan
     @patch("app.api.v1.agent.AsyncSessionLocal")
     @patch("app.api.v1.agent.create_agent")
     async def test_06_run_stream(
+<<<<<<< HEAD
         self, MockAgent, MockSessionLocal, _mock_load, _mock_save, _mock_checkpoint, _mock_precompress, e2e_client: AsyncClient
+=======
+        self, MockAgent, MockSessionLocal, _mock_load, _mock_save, e2e_client: AsyncClient
+>>>>>>> feat/spec-tree-plan
     ):
         MockAgent.return_value = _make_streaming_mock_agent()
         MockSessionLocal.side_effect = lambda: _mock_session_local()()
@@ -763,8 +790,13 @@ class TestFileUploadE2E:
         assert body["filename"] == "e2e-test.txt"
 
     @patch("app.api.v1.agent.save_session_messages", new_callable=AsyncMock)
+<<<<<<< HEAD
     @patch("app.api.v1.agent.load_or_create_session", new_callable=AsyncMock, return_value=SessionData(session_id="test-session-id"))
     @patch("app.api.v1.agent.create_agent")
+=======
+    @patch("app.api.v1.agent.load_or_create_session", new_callable=AsyncMock, return_value=("test-session-id", None))
+    @patch("app.api.v1.agent.SkillsAgent")
+>>>>>>> feat/spec-tree-plan
     async def test_03_run_agent_with_file(
         self, MockAgent, _mock_load, _mock_save, e2e_client: AsyncClient
     ):
@@ -962,14 +994,21 @@ class TestPublishedAgentSessionE2E:
         assert resp.status_code == 200
         assert resp.json()["is_published"] is True
 
+<<<<<<< HEAD
     @patch("app.api.v1.published.pre_compress_if_needed", new_callable=AsyncMock, return_value=[])
     @patch("app.api.v1.published.save_session_checkpoint", new_callable=AsyncMock)
+=======
+>>>>>>> feat/spec-tree-plan
     @patch("app.api.v1.published.save_session_messages", new_callable=AsyncMock)
     @patch("app.api.v1.published.load_or_create_session", new_callable=AsyncMock)
     @patch("app.api.v1.published.SkillsAgent")
     @patch("app.api.v1.published.AsyncSessionLocal")
     async def test_03_chat_sse(
+<<<<<<< HEAD
         self, MockSL, MockAgent, MockLoadSession, _mock_save, _mock_checkpoint, _mock_precompress, e2e_client: AsyncClient
+=======
+        self, MockSL, MockAgent, MockLoadSession, _mock_save, e2e_client: AsyncClient
+>>>>>>> feat/spec-tree-plan
     ):
         pid = type(self)._state["preset_id"]
 
@@ -1012,7 +1051,11 @@ class TestPublishedAgentSessionE2E:
         MockSL.side_effect = lambda: _ctx()
 
         session_id = str(uuid.uuid4())
+<<<<<<< HEAD
         MockLoadSession.return_value = SessionData(session_id=session_id)
+=======
+        MockLoadSession.return_value = (session_id, None)
+>>>>>>> feat/spec-tree-plan
         resp = await e2e_client.post(
             f"/api/v1/published/{pid}/chat",
             json={"request": "Hello published", "session_id": session_id},
@@ -2412,8 +2455,13 @@ class TestAutoDetectOutputFilesE2E:
     _state: dict = {}
 
     @patch("app.api.v1.agent.save_session_messages", new_callable=AsyncMock)
+<<<<<<< HEAD
     @patch("app.api.v1.agent.load_or_create_session", new_callable=AsyncMock, return_value=SessionData(session_id="test-session-id"))
     @patch("app.api.v1.agent.create_agent")
+=======
+    @patch("app.api.v1.agent.load_or_create_session", new_callable=AsyncMock, return_value=("test-session-id", None))
+    @patch("app.api.v1.agent.SkillsAgent")
+>>>>>>> feat/spec-tree-plan
     async def test_01_run_with_output_files(
         self, MockAgent, _mock_load, _mock_save, e2e_client: AsyncClient
     ):
@@ -2444,8 +2492,13 @@ class TestAutoDetectOutputFilesE2E:
         type(self)._state["trace_id_1"] = body["trace_id"]
 
     @patch("app.api.v1.agent.save_session_messages", new_callable=AsyncMock)
+<<<<<<< HEAD
     @patch("app.api.v1.agent.load_or_create_session", new_callable=AsyncMock, return_value=SessionData(session_id="test-session-id"))
     @patch("app.api.v1.agent.create_agent")
+=======
+    @patch("app.api.v1.agent.load_or_create_session", new_callable=AsyncMock, return_value=("test-session-id", None))
+    @patch("app.api.v1.agent.SkillsAgent")
+>>>>>>> feat/spec-tree-plan
     async def test_02_run_no_output_files(
         self, MockAgent, _mock_load, _mock_save, e2e_client: AsyncClient
     ):
@@ -2461,14 +2514,23 @@ class TestAutoDetectOutputFilesE2E:
         assert body["success"] is True
         assert body["output_files"] is None
 
+<<<<<<< HEAD
     @patch("app.api.v1.agent.pre_compress_if_needed", new_callable=AsyncMock, return_value=[])
     @patch("app.api.v1.agent.save_session_checkpoint", new_callable=AsyncMock)
     @patch("app.api.v1.agent.save_session_messages", new_callable=AsyncMock)
     @patch("app.api.v1.agent.load_or_create_session", new_callable=AsyncMock, return_value=SessionData(session_id="test-session-id"))
+=======
+    @patch("app.api.v1.agent.save_session_messages", new_callable=AsyncMock)
+    @patch("app.api.v1.agent.load_or_create_session", new_callable=AsyncMock, return_value=("test-session-id", None))
+>>>>>>> feat/spec-tree-plan
     @patch("app.api.v1.agent.AsyncSessionLocal")
     @patch("app.api.v1.agent.create_agent")
     async def test_03_stream_with_output_file_events(
+<<<<<<< HEAD
         self, MockAgent, MockSessionLocal, _mock_load, _mock_save, _mock_checkpoint, _mock_precompress, e2e_client: AsyncClient
+=======
+        self, MockAgent, MockSessionLocal, _mock_load, _mock_save, e2e_client: AsyncClient
+>>>>>>> feat/spec-tree-plan
     ):
         """POST /agent/run/stream → output_file SSE events + output_files in complete."""
         mock_output_files = [
@@ -2539,14 +2601,23 @@ class TestAutoDetectOutputFilesE2E:
         assert "output_files" in complete_event
         assert len(complete_event["output_files"]) == 1
 
+<<<<<<< HEAD
     @patch("app.api.v1.agent.pre_compress_if_needed", new_callable=AsyncMock, return_value=[])
     @patch("app.api.v1.agent.save_session_checkpoint", new_callable=AsyncMock)
     @patch("app.api.v1.agent.save_session_messages", new_callable=AsyncMock)
     @patch("app.api.v1.agent.load_or_create_session", new_callable=AsyncMock, return_value=SessionData(session_id="test-session-id"))
+=======
+    @patch("app.api.v1.agent.save_session_messages", new_callable=AsyncMock)
+    @patch("app.api.v1.agent.load_or_create_session", new_callable=AsyncMock, return_value=("test-session-id", None))
+>>>>>>> feat/spec-tree-plan
     @patch("app.api.v1.agent.AsyncSessionLocal")
     @patch("app.api.v1.agent.create_agent")
     async def test_04_stream_no_output_files(
+<<<<<<< HEAD
         self, MockAgent, MockSessionLocal, _mock_load, _mock_save, _mock_checkpoint, _mock_precompress, e2e_client: AsyncClient
+=======
+        self, MockAgent, MockSessionLocal, _mock_load, _mock_save, e2e_client: AsyncClient
+>>>>>>> feat/spec-tree-plan
     ):
         """POST /agent/run/stream without output files → no output_file events."""
         MockAgent.return_value = _make_streaming_mock_agent(answer="Just text")
@@ -2863,7 +2934,11 @@ class TestPublishedAgentOutputFilesE2E:
         MockSL.side_effect = lambda: _ctx()
 
         session_id = str(uuid.uuid4())
+<<<<<<< HEAD
         MockLoadSession.return_value = SessionData(session_id=session_id)
+=======
+        MockLoadSession.return_value = (session_id, None)
+>>>>>>> feat/spec-tree-plan
         resp = await e2e_client.post(
             f"/api/v1/published/{pid}/chat/sync",
             json={"request": "Analyze this data", "session_id": session_id},
@@ -2927,7 +3002,11 @@ class TestPublishedAgentOutputFilesE2E:
         MockSL.side_effect = lambda: _ctx()
 
         session_id = str(uuid.uuid4())
+<<<<<<< HEAD
         MockLoadSession.return_value = SessionData(session_id=session_id)
+=======
+        MockLoadSession.return_value = (session_id, None)
+>>>>>>> feat/spec-tree-plan
         resp = await e2e_client.post(
             f"/api/v1/published/{pid}/chat/sync",
             json={"request": "Just a question", "session_id": session_id},

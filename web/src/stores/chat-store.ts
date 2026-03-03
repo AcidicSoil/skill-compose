@@ -194,7 +194,11 @@ export const useChatStore = create<ChatState>()(
     }),
     {
       name: 'chat-storage',
+<<<<<<< HEAD
       version: 11, // Increment this when making breaking changes
+=======
+      version: 10, // Increment this when making breaking changes
+>>>>>>> feat/spec-tree-plan
       partialize: (state) => ({
         // Messages are NOT persisted — server session is source of truth
         sessionId: state.sessionId,
@@ -259,6 +263,12 @@ export const useChatStore = create<ChatState>()(
             raw.selectedExecutorName = null;  // Clear old UUID value
             delete raw.selectedExecutorId;
           }
+        }
+
+        // v9 -> v10: Add sessionId, messages no longer persisted (server is source of truth)
+        if (version < 10) {
+          (state as Record<string, unknown>).sessionId = null;
+          state.messages = [];
         }
 
         return state as ChatState;

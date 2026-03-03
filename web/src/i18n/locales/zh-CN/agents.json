@@ -26,8 +26,12 @@
   "detail": {
     "tabs": {
       "overview": "概览",
+<<<<<<< HEAD
       "configuration": "配置",
       "memory": "记忆"
+=======
+      "configuration": "配置"
+>>>>>>> feat/spec-tree-plan
     },
     "overview": "概览",
     "configuration": "配置",

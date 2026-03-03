@@ -65,9 +65,15 @@
     "executions": "Executions"
   },
   "quickActions": {
+<<<<<<< HEAD
     "findSkills": {
       "title": "Find Skills",
       "description": "Discover community-built skills"
+=======
+    "browseSkills": {
+      "title": "Browse Skills",
+      "description": "Manage your skills library"
+>>>>>>> feat/spec-tree-plan
     },
     "createSkill": {
       "title": "Create Skill",

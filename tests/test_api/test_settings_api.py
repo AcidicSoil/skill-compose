@@ -20,6 +20,13 @@ from pathlib import Path
 from unittest.mock import patch
 from httpx import AsyncClient
 
+pytestmark = pytest.mark.anyio("asyncio")
+
+
+@pytest.fixture
+def anyio_backend():
+    return "asyncio"
+
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -389,6 +396,23 @@ class TestMaskValue:
 
 
 # ---------------------------------------------------------------------------
+# Config.py settings fields
+# ---------------------------------------------------------------------------
+
+class TestConfigSettingsFields:
+    """Tests for Settings field coverage."""
+
+    def test_settings_reads_openai_base_url_from_environment(self, monkeypatch: pytest.MonkeyPatch):
+        from app.config import Settings
+
+        monkeypatch.setenv("OPENAI_BASE_URL", "https://openai-proxy.example/v1")
+
+        settings = Settings()
+
+        assert settings.openai_base_url == "https://openai-proxy.example/v1"
+
+
+# ---------------------------------------------------------------------------
 # Config.py load_dotenv priority
 # ---------------------------------------------------------------------------
 
@@ -462,6 +486,100 @@ class TestConfigEnvPriority:
             path = _get_env_file_path()
 
         assert path == (tmp_path / ".env").resolve()
+
+
+# ---------------------------------------------------------------------------
+# Cached settings refresh after writes
+# ---------------------------------------------------------------------------
+
+class TestSettingsCacheRefresh:
+    """Tests that env writes refresh cached settings."""
+
+    @pytest.mark.anyio
+    async def test_create_env_variable_refreshes_cached_settings(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+        from app.config import get_settings
+        from app.api.v1.settings import EnvVariableCreate, create_env_variable
+
+        env_file = tmp_path / ".env"
+        _write_test_env(env_file, "")
+        monkeypatch.delenv("OPENAI_BASE_URL", raising=False)
+        get_settings.cache_clear()
+
+        first = get_settings()
+        assert first.openai_base_url == ""
+
+        with patch("app.api.v1.settings._get_env_file_path", return_value=env_file):
+            await create_env_variable(
+                EnvVariableCreate(key="OPENAI_BASE_URL", value="https://proxy.example/v1")
+            )
+
+        second = get_settings()
+        assert second.openai_base_url == "https://proxy.example/v1"
+        get_settings.cache_clear()
+
+    @pytest.mark.anyio
+    async def test_update_env_variable_refreshes_cached_settings(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+        from app.config import get_settings
+        from app.api.v1.settings import EnvVariableUpdate, update_env_variable
+
+        env_file = tmp_path / ".env"
+        _write_test_env(env_file, "OPENAI_BASE_URL=https://old.example/v1\n")
+        monkeypatch.setenv("OPENAI_BASE_URL", "https://old.example/v1")
+        get_settings.cache_clear()
+
+        first = get_settings()
+        assert first.openai_base_url == "https://old.example/v1"
+
+        with patch("app.api.v1.settings._get_env_file_path", return_value=env_file):
+            await update_env_variable(
+                EnvVariableUpdate(key="OPENAI_BASE_URL", value="https://proxy.example/v1")
+            )
+
+        second = get_settings()
+        assert second.openai_base_url == "https://proxy.example/v1"
+        get_settings.cache_clear()
+
+    @pytest.mark.anyio
+    async def test_delete_env_variable_refreshes_cached_settings(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+        from app.config import get_settings
+        from app.api.v1.settings import delete_env_variable
+
+        env_file = tmp_path / ".env"
+        _write_test_env(env_file, "OPENAI_BASE_URL=https://old.example/v1\n")
+        monkeypatch.setenv("OPENAI_BASE_URL", "https://old.example/v1")
+        get_settings.cache_clear()
+
+        first = get_settings()
+        assert first.openai_base_url == "https://old.example/v1"
+
+        with patch("app.api.v1.settings._get_env_file_path", return_value=env_file):
+            await delete_env_variable("OPENAI_BASE_URL")
+
+        second = get_settings()
+        assert second.openai_base_url == ""
+        get_settings.cache_clear()
+
+    @pytest.mark.anyio
+    async def test_batch_update_refreshes_cached_settings(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+        from app.config import get_settings
+        from app.api.v1.settings import EnvVariableUpdate, update_env_variables_batch
+
+        env_file = tmp_path / ".env"
+        _write_test_env(env_file, "")
+        monkeypatch.delenv("OPENAI_BASE_URL", raising=False)
+        get_settings.cache_clear()
+
+        first = get_settings()
+        assert first.openai_base_url == ""
+
+        with patch("app.api.v1.settings._get_env_file_path", return_value=env_file):
+            await update_env_variables_batch([
+                EnvVariableUpdate(key="OPENAI_BASE_URL", value="https://proxy.example/v1")
+            ])
+
+        second = get_settings()
+        assert second.openai_base_url == "https://proxy.example/v1"
+        get_settings.cache_clear()
 
 
 # ---------------------------------------------------------------------------

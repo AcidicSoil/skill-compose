@@ -2,18 +2,24 @@
 
 Inspired by Pi Agent's EventStream — a CSP-style push/pull channel using asyncio.Queue.
 Supports bidirectional communication: agent pushes events, API injects steering messages.
+<<<<<<< HEAD
 Includes heartbeat: if no event is pushed within HEARTBEAT_INTERVAL seconds, a heartbeat
 event is yielded to keep the SSE connection alive through proxies/load balancers.
+=======
+>>>>>>> feat/spec-tree-plan
 """
 import asyncio
 from typing import Optional
 
 from app.agent.agent import StreamEvent
 
+<<<<<<< HEAD
 # Heartbeat interval in seconds.  Most proxies (nginx, AWS ALB) drop idle
 # connections after 60-120s.  15s keeps us well within that window.
 HEARTBEAT_INTERVAL = 15
 
+=======
+>>>>>>> feat/spec-tree-plan
 
 class EventStream:
     """Async event channel for streaming agent events to API consumers.
@@ -21,6 +27,7 @@ class EventStream:
     Producer (agent): calls push() / close()
     Consumer (API endpoint): async iterates over the stream
     Steering (API endpoint → agent): inject() / has_injection() / get_injection()
+<<<<<<< HEAD
     Heartbeat: auto-yields heartbeat events when idle > HEARTBEAT_INTERVAL seconds
     """
 
@@ -29,6 +36,14 @@ class EventStream:
         self._injection_queue: asyncio.Queue[str] = asyncio.Queue()
         self._closed = False
         self._heartbeat_interval = heartbeat_interval
+=======
+    """
+
+    def __init__(self):
+        self._queue: asyncio.Queue[Optional[StreamEvent]] = asyncio.Queue()
+        self._injection_queue: asyncio.Queue[str] = asyncio.Queue()
+        self._closed = False
+>>>>>>> feat/spec-tree-plan
 
     async def push(self, event: StreamEvent):
         """Push an event into the stream. No-op if already closed."""
@@ -63,6 +78,7 @@ class EventStream:
             return None
 
     async def __aiter__(self):
+<<<<<<< HEAD
         """Async iterate over events until the stream is closed.
 
         Yields heartbeat events when no real event arrives within
@@ -85,3 +101,11 @@ class EventStream:
                     turn=0,
                     data={},
                 )
+=======
+        """Async iterate over events until the stream is closed."""
+        while True:
+            event = await self._queue.get()
+            if event is None:
+                break
+            yield event
+>>>>>>> feat/spec-tree-plan

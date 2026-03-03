@@ -118,7 +118,10 @@ export interface TraceSavedRecord extends StreamEventRecordBase {
 // Steering received event data
 export interface SteeringReceivedData {
   message: string;
+<<<<<<< HEAD
   steeringId?: string;
+=======
+>>>>>>> feat/spec-tree-plan
 }
 
 export interface SteeringReceivedRecord extends StreamEventRecordBase {
@@ -126,6 +129,7 @@ export interface SteeringReceivedRecord extends StreamEventRecordBase {
   data: SteeringReceivedData;
 }
 
+<<<<<<< HEAD
 // Ask user event data (agent run ends, resumes when user replies)
 export interface AskUserData {
   promptId: string;
@@ -138,6 +142,8 @@ export interface AskUserRecord extends StreamEventRecordBase {
   data: AskUserData;
 }
 
+=======
+>>>>>>> feat/spec-tree-plan
 // Union type of all stream event records
 export type StreamEventRecord =
   | TurnStartRecord
@@ -149,8 +155,12 @@ export type StreamEventRecord =
   | ErrorRecord
   | RunStartedRecord
   | TraceSavedRecord
+<<<<<<< HEAD
   | SteeringReceivedRecord
   | AskUserRecord;
+=======
+  | SteeringReceivedRecord;
+>>>>>>> feat/spec-tree-plan
 
 // Type guard functions
 export function isTurnStartRecord(record: StreamEventRecord): record is TurnStartRecord {

@@ -5,7 +5,11 @@ import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import {
   RotateCcw, Paperclip, X, Wrench, Plug, ChevronDown, ChevronUp, Square, Bot, Cpu, Server,
+<<<<<<< HEAD
   MessageSquare, Home, Settings, Plus,
+=======
+  MessageSquare, Home, Settings, Navigation, Plus,
+>>>>>>> feat/spec-tree-plan
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -23,14 +27,20 @@ import { useChatEngine } from "@/hooks/use-chat-engine";
 import { ChatMessageItem } from "@/components/chat/chat-message";
 import { ModelSelect, AgentPresetSelect, ExecutorSelect } from "@/components/chat/selects";
 import { useTranslation } from "@/i18n/client";
+<<<<<<< HEAD
 import { getSkillDescription, getAgentDisplayName } from "@/lib/seed-descriptions";
 import { generateUUID } from "@/lib/utils";
+=======
+>>>>>>> feat/spec-tree-plan
 
 export default function FullscreenChatPage() {
   const { t } = useTranslation('chat');
   const { t: tc } = useTranslation('common');
+<<<<<<< HEAD
   const { t: ts } = useTranslation('skills');
   const { t: ta } = useTranslation('agents');
+=======
+>>>>>>> feat/spec-tree-plan
 
   const {
     messages, selectedSkills, selectedTools, selectedMcpServers, isRunning, maxTurns,
@@ -40,12 +50,20 @@ export default function FullscreenChatPage() {
     setIsRunning, setMaxTurns, addUploadedFile, removeUploadedFile, clearUploadedFiles,
     setSelectedAgentPreset, setSystemPrompt,
     selectedModelProvider, selectedModelName, setSelectedModel,
+<<<<<<< HEAD
     selectedExecutorName, setSelectedExecutorName,
+=======
+    selectedExecutorId, setSelectedExecutorId,
+>>>>>>> feat/spec-tree-plan
   } = useChatStore();
 
   useChatSessionRestore();
 
+<<<<<<< HEAD
   const [showConfig, setShowConfig] = React.useState(true);
+=======
+  const [showConfig, setShowConfig] = React.useState(false);
+>>>>>>> feat/spec-tree-plan
   const [showToolsPanel, setShowToolsPanel] = React.useState(false);
   const [showResetDialog, setShowResetDialog] = React.useState(false);
 
@@ -64,7 +82,11 @@ export default function FullscreenChatPage() {
         const state = useChatStore.getState();
         let currentSessionId = state.sessionId;
         if (!currentSessionId) {
+<<<<<<< HEAD
           currentSessionId = generateUUID();
+=======
+          currentSessionId = crypto.randomUUID();
+>>>>>>> feat/spec-tree-plan
           setSessionId(currentSessionId);
         }
 
@@ -86,7 +108,11 @@ export default function FullscreenChatPage() {
           const currentMcpServers = state.selectedMcpServers;
           const currentTools = state.selectedTools;
           const currentSystemPrompt = state.systemPrompt;
+<<<<<<< HEAD
           const currentExecutorName = state.selectedExecutorName;
+=======
+          const currentExecutorId = state.selectedExecutorId;
+>>>>>>> feat/spec-tree-plan
 
           agentRequest = {
             request, session_id: currentSessionId,
@@ -98,7 +124,11 @@ export default function FullscreenChatPage() {
             system_prompt: currentSystemPrompt || undefined,
             model_provider: currentModelProvider || undefined,
             model_name: currentModelName || undefined,
+<<<<<<< HEAD
             executor_name: currentExecutorName || undefined,
+=======
+            executor_id: currentExecutorId || undefined,
+>>>>>>> feat/spec-tree-plan
           };
         }
 
@@ -107,6 +137,7 @@ export default function FullscreenChatPage() {
       steer: async (traceId, message) => { await agentApi.steerAgent(traceId, message); },
     },
     onSessionId: (id) => setSessionId(id),
+<<<<<<< HEAD
     validateBeforeRun: () => {
       const state = useChatStore.getState();
       const effectiveProvider = state.selectedModelProvider || 'kimi';
@@ -123,12 +154,22 @@ export default function FullscreenChatPage() {
 
   // Fetch data
   const { data: skillsData } = useQuery({ queryKey: ["registry-skills-list"], queryFn: () => skillsApi.list() });
+=======
+  });
+
+  // Fetch data — defer skills/tools/MCP until config panel is open
+  const { data: skillsData } = useQuery({ queryKey: ["registry-skills-list"], queryFn: () => skillsApi.list(), enabled: showConfig });
+>>>>>>> feat/spec-tree-plan
   const skills = (skillsData?.skills || []).filter(s => s.skill_type === 'user');
 
   const { data: toolsData } = useQuery({ queryKey: ["tools-list"], queryFn: () => toolsApi.list() });
   const tools = toolsData?.tools || [];
 
+<<<<<<< HEAD
   const { data: mcpData } = useQuery({ queryKey: ["mcp-servers"], queryFn: () => mcpApi.listServers() });
+=======
+  const { data: mcpData } = useQuery({ queryKey: ["mcp-servers"], queryFn: () => mcpApi.listServers(), enabled: showConfig });
+>>>>>>> feat/spec-tree-plan
   const mcpServers = mcpData?.servers || [];
 
   const { data: agentPresetsData, isLoading: isLoadingAgents } = useQuery({ queryKey: ["agent-presets-user"], queryFn: () => agentPresetsApi.list({ is_system: false }) });
@@ -170,8 +211,11 @@ export default function FullscreenChatPage() {
   const applyPreset = (presetId: string) => {
     const preset = agentPresets.find((p) => p.id === presetId);
     if (!preset) return;
+<<<<<<< HEAD
     // Reset session so the new agent gets a fresh server-side session
     setSessionId(null);
+=======
+>>>>>>> feat/spec-tree-plan
     setSelectedAgentPreset(preset.id);
     setSelectedSkills(preset.skill_ids || []);
     setMaxTurns(preset.max_turns);
@@ -181,6 +225,7 @@ export default function FullscreenChatPage() {
     else setSelectedTools([]);
     setSelectedMcpServers(preset.mcp_servers || []);
     setSelectedModel(preset.model_provider || null, preset.model_name || null);
+<<<<<<< HEAD
     setSelectedExecutorName(preset.executor_name || null);
   };
 
@@ -189,6 +234,13 @@ export default function FullscreenChatPage() {
     : null;
   const currentAgentName = selectedPresetName
     ? getAgentDisplayName(ta, selectedPresetName)
+=======
+    setSelectedExecutorId(preset.executor_id || null);
+  };
+
+  const currentAgentName = selectedAgentPreset
+    ? agentPresets.find((p) => p.id === selectedAgentPreset)?.name || "Custom"
+>>>>>>> feat/spec-tree-plan
     : t('configuration.customConfig');
 
   return (
@@ -232,8 +284,13 @@ export default function FullscreenChatPage() {
               <span className="text-muted-foreground/40 select-none">|</span>
               <Server className="h-4 w-4 text-muted-foreground shrink-0" />
               <ExecutorSelect
+<<<<<<< HEAD
                 value={selectedExecutorName}
                 onChange={(id) => { setSelectedExecutorName(id); setSelectedAgentPreset(null); }}
+=======
+                value={selectedExecutorId}
+                onChange={(id) => { setSelectedExecutorId(id); setSelectedAgentPreset(null); }}
+>>>>>>> feat/spec-tree-plan
                 executors={onlineExecutors}
                 size="sm"
                 className="max-w-[120px]"
@@ -251,11 +308,18 @@ export default function FullscreenChatPage() {
             variant={showConfig ? "default" : "outline"}
             size="sm"
             onClick={() => setShowConfig(!showConfig)}
+<<<<<<< HEAD
             title={showConfig ? t('hideConfig') : t('showConfig')}
           >
             <Settings className="h-4 w-4 mr-1" />
             {t('config')}
             {showConfig ? <ChevronUp className="h-3.5 w-3.5 ml-1" /> : <ChevronDown className="h-3.5 w-3.5 ml-1" />}
+=======
+            title={t('config')}
+          >
+            <Settings className="h-4 w-4 mr-1" />
+            {t('config')}
+>>>>>>> feat/spec-tree-plan
           </Button>
           <Button variant="outline" size="sm" onClick={() => newSession()} disabled={messages.length === 0 || isRunning} title={t('newChat')}>
             <Plus className="h-4 w-4 mr-1" />
@@ -293,7 +357,11 @@ export default function FullscreenChatPage() {
             <div className="flex items-center gap-2">
               <span className="text-sm text-muted-foreground">{t('configuration.skills')}:</span>
               <MultiSelect
+<<<<<<< HEAD
                 options={skills.map((s) => ({ value: s.name, label: s.name, description: getSkillDescription(ts, s.name, s.description)?.slice(0, 50) }))}
+=======
+                options={skills.map((s) => ({ value: s.name, label: s.name, description: s.description?.slice(0, 50) }))}
+>>>>>>> feat/spec-tree-plan
                 selected={selectedSkills}
                 onChange={(s) => { setSelectedSkills(s); setSelectedAgentPreset(null); }}
                 placeholder={t('configuration.selectSkills')} emptyText="None"
@@ -375,15 +443,22 @@ export default function FullscreenChatPage() {
             {!showConfig && <p className="text-sm mt-1">{t('clickConfigToCustomize')}</p>}
           </div>
         ) : (
+<<<<<<< HEAD
           messages.map((message, idx) => (
+=======
+          messages.map((message) => (
+>>>>>>> feat/spec-tree-plan
             <div key={message.id} className="max-w-4xl mx-auto">
               <ChatMessageItem
                 message={message}
                 streamingContent={message.id === engine.streamingMessageId ? engine.streamingContent : null}
                 streamingEvents={message.id === engine.streamingMessageId ? engine.streamingEvents : undefined}
                 streamingOutputFiles={message.id === engine.streamingMessageId ? engine.currentOutputFiles : undefined}
+<<<<<<< HEAD
                 onAskUserRespond={engine.handleRespond}
                 askUserAnswer={message.role === 'assistant' && messages[idx + 1]?.role === 'user' ? messages[idx + 1].content : undefined}
+=======
+>>>>>>> feat/spec-tree-plan
               />
             </div>
           ))
@@ -412,7 +487,11 @@ export default function FullscreenChatPage() {
               value={engine.input}
               onChange={(e) => engine.setInput(e.target.value)}
               onKeyDown={engine.handleKeyDown}
+<<<<<<< HEAD
               placeholder={t('placeholder')}
+=======
+              placeholder={isRunning ? t('steering.placeholder') : t('placeholder')}
+>>>>>>> feat/spec-tree-plan
               className="min-h-[80px] resize-none"
               aria-label={t('placeholder')}
             />
@@ -431,12 +510,21 @@ export default function FullscreenChatPage() {
                 <Button onClick={engine.handleStop} variant="destructive" size="sm">
                   <Square className="h-4 w-4 mr-1" />{t('stop')}
                 </Button>
+<<<<<<< HEAD
                 <Button onClick={() => engine.handleSubmit()} disabled={!engine.input.trim()} size="sm">
                   {t('send')}
                 </Button>
               </div>
             ) : (
               <Button onClick={() => engine.handleSubmit()} disabled={!engine.input.trim()}>{t('send')}</Button>
+=======
+                <Button onClick={engine.handleSubmit} disabled={!engine.input.trim()} size="sm">
+                  <Navigation className="h-4 w-4 mr-1" />{t('steering.button')}
+                </Button>
+              </div>
+            ) : (
+              <Button onClick={engine.handleSubmit} disabled={!engine.input.trim()}>{t('send')}</Button>
+>>>>>>> feat/spec-tree-plan
             )}
           </div>
         </div>

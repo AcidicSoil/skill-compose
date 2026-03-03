@@ -2,7 +2,11 @@
 
 import React from "react";
 import { flushSync } from "react-dom";
+<<<<<<< HEAD
 import { filesApi, ApiError } from "@/lib/api";
+=======
+import { filesApi } from "@/lib/api";
+>>>>>>> feat/spec-tree-plan
 import type { StreamEvent, OutputFileInfo, UploadedFile } from "@/lib/api";
 import type { ChatMessage } from "@/stores/chat-store";
 import type { StreamEventRecord } from "@/types/stream-events";
@@ -55,19 +59,29 @@ export interface ChatEngineOptions {
   responseMode?: 'streaming' | 'non_streaming';
   /** Called when session_id changes (e.g. from run_started event) */
   onSessionId?: (id: string) => void;
+<<<<<<< HEAD
   /** Pre-flight validation before running. Return error message to abort (shown as toast), or null to proceed. */
   validateBeforeRun?: () => string | null;
+=======
+>>>>>>> feat/spec-tree-plan
 }
 
 export interface ChatEngineReturn {
   input: string;
   setInput: React.Dispatch<React.SetStateAction<string>>;
+<<<<<<< HEAD
   handleSubmit: (overrideMessage?: string) => Promise<void>;
+=======
+  handleSubmit: () => Promise<void>;
+>>>>>>> feat/spec-tree-plan
   handleStop: () => void;
   handleKeyDown: (e: React.KeyboardEvent) => void;
   handleFileUpload: (e: React.ChangeEvent<HTMLInputElement>) => Promise<void>;
   handleRemoveFile: (fileId: string) => Promise<void>;
+<<<<<<< HEAD
   handleRespond: (promptId: string, answer: string) => void;
+=======
+>>>>>>> feat/spec-tree-plan
   streamingContent: string | null;
   streamingEvents: StreamEventRecord[];
   streamingMessageId: string | null;
@@ -94,22 +108,29 @@ export function useChatEngine(options: ChatEngineOptions): ChatEngineReturn {
   const abortControllerRef = React.useRef<AbortController | null>(null);
   const currentRequestMessagesRef = React.useRef<string[]>([]);
   const currentTraceIdRef = React.useRef<string | null>(null);
+<<<<<<< HEAD
   // Ref to the active events array during streaming, so handleSteer can inject into it
   const currentEventsRef = React.useRef<StreamEventRecord[] | null>(null);
+=======
+>>>>>>> feat/spec-tree-plan
 
   // Stable refs to avoid stale closures in callbacks
   const adapterRef = React.useRef(options);
   adapterRef.current = options;
+<<<<<<< HEAD
   // Ref for handleSubmit so handleRespond can call it without circular dependency
   const handleSubmitRef = React.useRef<(overrideMessage?: string) => Promise<void>>(async () => {});
   // Pending ask_user response queued while a run was still in progress
   const pendingAskUserResponseRef = React.useRef<string | null>(null);
   // Pending steering resubmit: when steer gets 409, queue message here for resubmit after run ends
   const pendingSteerResubmitRef = React.useRef<string | null>(null);
+=======
+>>>>>>> feat/spec-tree-plan
 
   const handleSteer = React.useCallback(async (message: string) => {
     const traceId = currentTraceIdRef.current;
     if (!traceId) return;
+<<<<<<< HEAD
 
     // Optimistically show the steering message immediately
     const events = currentEventsRef.current;
@@ -166,18 +187,35 @@ export function useChatEngine(options: ChatEngineOptions): ChatEngineReturn {
   const handleSubmit = React.useCallback(async (overrideMessage?: string) => {
     const messageText = overrideMessage || input.trim();
     if (!messageText) return;
+=======
+    try {
+      await adapterRef.current.streamAdapter.steer(traceId, message);
+      setInput("");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to send steering message");
+    }
+  }, []);
+
+  const handleSubmit = React.useCallback(async () => {
+    if (!input.trim()) return;
+>>>>>>> feat/spec-tree-plan
     const { messageAdapter: ma, streamAdapter: sa, responseMode: rm = 'streaming', onSessionId: onSid } = adapterRef.current;
 
     // Steering mode: inject message into running agent
     if (ma.getIsRunning() && currentTraceIdRef.current) {
+<<<<<<< HEAD
       await handleSteer(messageText);
       if (!overrideMessage) setInput("");
+=======
+      await handleSteer(input.trim());
+>>>>>>> feat/spec-tree-plan
       return;
     }
 
     // Prevent concurrent runs
     if (ma.getIsRunning()) return;
 
+<<<<<<< HEAD
     // Pre-flight validation (e.g. API key check)
     if (adapterRef.current.validateBeforeRun) {
       const error = adapterRef.current.validateBeforeRun();
@@ -187,6 +225,8 @@ export function useChatEngine(options: ChatEngineOptions): ChatEngineReturn {
       }
     }
 
+=======
+>>>>>>> feat/spec-tree-plan
     const abortController = new AbortController();
     abortControllerRef.current = abortController;
 
@@ -204,7 +244,11 @@ export function useChatEngine(options: ChatEngineOptions): ChatEngineReturn {
     const userMessage: ChatMessage = {
       id: Date.now().toString(),
       role: "user",
+<<<<<<< HEAD
       content: messageText,
+=======
+      content: input.trim(),
+>>>>>>> feat/spec-tree-plan
       timestamp: Date.now(),
       attachedFiles: uploadedFiles.length > 0
         ? uploadedFiles.map((f) => ({ file_id: f.file_id, filename: f.filename }))
@@ -224,7 +268,11 @@ export function useChatEngine(options: ChatEngineOptions): ChatEngineReturn {
 
     ma.addMessage(userMessage);
     ma.addMessage(loadingMessage);
+<<<<<<< HEAD
     if (!overrideMessage) setInput("");
+=======
+    setInput("");
+>>>>>>> feat/spec-tree-plan
     ma.clearUploadedFiles();
     ma.setIsRunning(true);
     setStreamingMessageId(loadingMessageId);
@@ -232,11 +280,14 @@ export function useChatEngine(options: ChatEngineOptions): ChatEngineReturn {
     setStreamingEvents([]);
     setCurrentOutputFiles([]);
 
+<<<<<<< HEAD
     // Track partial progress for resilient error recovery
     let partialEvents: StreamEventRecord[] | null = null;
     let partialTraceId: string | undefined;
     let partialOutputFiles: OutputFileInfo[] | undefined;
 
+=======
+>>>>>>> feat/spec-tree-plan
     try {
       if (rm === 'non_streaming' && sa.runSync) {
         // ── Non-streaming (sync) mode ──
@@ -248,6 +299,7 @@ export function useChatEngine(options: ChatEngineOptions): ChatEngineReturn {
 
         if (result.steps && result.steps.length > 0) {
           for (const step of result.steps) {
+<<<<<<< HEAD
             if (step.tool_name === 'ask_user') {
               // Reconstruct ask_user event from the tool call
               const toolInput = step.tool_input as Record<string, unknown> | undefined;
@@ -262,6 +314,9 @@ export function useChatEngine(options: ChatEngineOptions): ChatEngineReturn {
                 },
               });
             } else if (step.tool_name) {
+=======
+            if (step.tool_name) {
+>>>>>>> feat/spec-tree-plan
               events.push({
                 id: `sync-${eventId++}`,
                 type: 'tool_call',
@@ -314,8 +369,11 @@ export function useChatEngine(options: ChatEngineOptions): ChatEngineReturn {
       } else {
         // ── Streaming mode ──
         const events: StreamEventRecord[] = [];
+<<<<<<< HEAD
         currentEventsRef.current = events;  // Allow handleSteer to inject into this array
         partialEvents = events;  // Same reference — accumulates automatically
+=======
+>>>>>>> feat/spec-tree-plan
         let finalAnswer = "";
         let traceId: string | undefined;
         let hasError = false;
@@ -332,7 +390,10 @@ export function useChatEngine(options: ChatEngineOptions): ChatEngineReturn {
             switch (event.event_type) {
               case "run_started":
                 traceId = event.trace_id;
+<<<<<<< HEAD
                 partialTraceId = traceId;
+=======
+>>>>>>> feat/spec-tree-plan
                 currentTraceIdRef.current = traceId || null;
                 if (event.session_id && onSid) {
                   onSid(event.session_id);
@@ -369,7 +430,10 @@ export function useChatEngine(options: ChatEngineOptions): ChatEngineReturn {
                     description: event.description,
                   };
                   outputFiles.push(fileInfo);
+<<<<<<< HEAD
                   partialOutputFiles = [...outputFiles];
+=======
+>>>>>>> feat/spec-tree-plan
                   flushSync(() => {
                     setCurrentOutputFiles([...outputFiles]);
                   });
@@ -396,6 +460,7 @@ export function useChatEngine(options: ChatEngineOptions): ChatEngineReturn {
         });
       }
     } catch (err) {
+<<<<<<< HEAD
       const isAbort = err instanceof Error && err.name === 'AbortError';
       if (isAbort) {
         // User clicked Stop — preserve partial progress if available
@@ -439,6 +504,16 @@ export function useChatEngine(options: ChatEngineOptions): ChatEngineReturn {
           error: err instanceof Error ? err.message : "Unknown error",
         });
       }
+=======
+      if (err instanceof Error && err.name === 'AbortError') {
+        return;
+      }
+      ma.updateMessage(loadingMessageId, {
+        content: "Failed to run agent",
+        isLoading: false,
+        error: err instanceof Error ? err.message : "Unknown error",
+      });
+>>>>>>> feat/spec-tree-plan
     } finally {
       ma.setIsRunning(false);
       setStreamingMessageId(null);
@@ -448,6 +523,7 @@ export function useChatEngine(options: ChatEngineOptions): ChatEngineReturn {
       abortControllerRef.current = null;
       currentRequestMessagesRef.current = [];
       currentTraceIdRef.current = null;
+<<<<<<< HEAD
       currentEventsRef.current = null;
 
       // Process queued steering resubmit (409 race: steer arrived after agent completed)
@@ -473,17 +549,44 @@ export function useChatEngine(options: ChatEngineOptions): ChatEngineReturn {
 
   const handleKeyDown = React.useCallback((e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) {
+=======
+    }
+  }, [input, handleSteer]);
+
+  const handleKeyDown = React.useCallback((e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+>>>>>>> feat/spec-tree-plan
       e.preventDefault();
       handleSubmit();
     }
   }, [handleSubmit]);
 
   const handleStop = React.useCallback(() => {
+<<<<<<< HEAD
     if (!adapterRef.current.messageAdapter.getIsRunning() || !abortControllerRef.current) return;
 
     // Signal abort — the catch block in handleSubmit will preserve partial
     // progress or remove messages if nothing was accumulated yet.
     abortControllerRef.current.abort();
+=======
+    const ma = adapterRef.current.messageAdapter;
+    if (!ma.getIsRunning() || !abortControllerRef.current) return;
+
+    abortControllerRef.current.abort();
+
+    if (currentRequestMessagesRef.current.length > 0) {
+      ma.removeMessages(currentRequestMessagesRef.current);
+    }
+
+    ma.setIsRunning(false);
+    setStreamingMessageId(null);
+    setStreamingContent(null);
+    setStreamingEvents([]);
+    setCurrentOutputFiles([]);
+    abortControllerRef.current = null;
+    currentRequestMessagesRef.current = [];
+    currentTraceIdRef.current = null;
+>>>>>>> feat/spec-tree-plan
   }, []);
 
   const handleFileUpload = React.useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -524,7 +627,10 @@ export function useChatEngine(options: ChatEngineOptions): ChatEngineReturn {
     handleKeyDown,
     handleFileUpload,
     handleRemoveFile,
+<<<<<<< HEAD
     handleRespond,
+=======
+>>>>>>> feat/spec-tree-plan
     streamingContent,
     streamingEvents,
     streamingMessageId,

@@ -13,9 +13,14 @@ from pydantic import BaseModel, Field
 from sqlalchemy import update
 from sqlalchemy.ext.asyncio import AsyncSession
 
+<<<<<<< HEAD
 from app.agent import EventStream, write_steering_message, poll_steering_messages, cleanup_steering_dir
 from app.api.v1.display_builder import DisplayMessageBuilder
 from app.api.v1.sessions import load_or_create_session, save_session_messages, save_session_checkpoint, save_session_checkpoint_sync, pre_compress_if_needed, CHAT_SENTINEL_AGENT_ID
+=======
+from app.agent import SkillsAgent, EventStream, write_steering_message, poll_steering_messages, cleanup_steering_dir
+from app.api.v1.sessions import load_or_create_session, save_session_messages, CHAT_SENTINEL_AGENT_ID
+>>>>>>> feat/spec-tree-plan
 from app.db.database import get_db, AsyncSessionLocal, SyncSessionLocal
 from app.db.models import AgentTraceDB, AgentPresetDB
 from app.services.agent_runner import AgentConfig, config_from_preset, create_agent, build_completed_trace, build_initial_trace
@@ -26,6 +31,20 @@ router = APIRouter(prefix="/agent", tags=["Agent"])
 
 # Module-level registry of active streaming runs (trace_id → EventStream)
 _active_streams: Dict[str, EventStream] = {}
+<<<<<<< HEAD
+=======
+
+
+async def _update_trace_async(trace_id: str, values: dict):
+    """Update trace record via async session."""
+    async with AsyncSessionLocal() as trace_db:
+        await trace_db.execute(
+            update(AgentTraceDB)
+            .where(AgentTraceDB.id == trace_id)
+            .values(**values)
+        )
+        await trace_db.commit()
+>>>>>>> feat/spec-tree-plan
 
 
 def _update_trace_sync(trace_id: str, values: dict):
@@ -47,9 +66,19 @@ async def _finalize_trace(trace_id: str, values: dict):
     asyncio.shield() would create.
     """
     try:
+<<<<<<< HEAD
         _update_trace_sync(trace_id, values)
     except Exception as e:
         logger.error(f"Trace update failed for {trace_id}: {e}")
+=======
+        await asyncio.shield(_update_trace_async(trace_id, values))
+    except (asyncio.CancelledError, Exception) as e:
+        logger.warning(f"Async trace update failed for {trace_id}, trying sync fallback: {e}")
+        try:
+            _update_trace_sync(trace_id, values)
+        except Exception as e2:
+            logger.error(f"Sync trace update also failed for {trace_id}: {e2}")
+>>>>>>> feat/spec-tree-plan
 
 
 class UploadedFile(BaseModel):
@@ -145,7 +174,11 @@ async def steer_agent(trace_id: str, body: SteerRequest, db: AsyncSession = Depe
     return {"status": "injected", "trace_id": trace_id}
 
 
+<<<<<<< HEAD
 async def _resolve_agent_config(request: AgentRequest, db: AsyncSession) -> AgentConfig:
+=======
+async def _resolve_agent_config(request: AgentRequest, db: AsyncSession) -> dict:
+>>>>>>> feat/spec-tree-plan
     """Resolve effective agent config. If agent_id is set, load preset and use its config."""
     from sqlalchemy import select
 
@@ -277,6 +310,7 @@ IMPORTANT: Use the absolute file paths shown above when reading or processing fi
     return actual_request, image_contents
 
 
+<<<<<<< HEAD
 def _validate_api_key(config: AgentConfig):
     """Validate that the API key for the selected provider is configured.
 
@@ -324,14 +358,56 @@ async def run_agent(request: AgentRequest, db: AsyncSession = Depends(get_db)):
 
     # Create agent with session_id as workspace_id for deterministic mapping
     agent = create_agent(config, workspace_id=session_id)
+=======
+def _create_agent(config: dict) -> SkillsAgent:
+    """Create a SkillsAgent from resolved config."""
+    return SkillsAgent(
+        model=config.get("model_name"),
+        model_provider=config.get("model_provider"),
+        max_turns=config["max_turns"],
+        verbose=True,
+        allowed_skills=config["skills"],
+        allowed_tools=config["allowed_tools"],
+        equipped_mcp_servers=config["equipped_mcp_servers"],
+        custom_system_prompt=config["system_prompt"],
+        executor_name=config.get("executor_name"),
+    )
+>>>>>>> feat/spec-tree-plan
+
+
+@router.post("/run", response_model=AgentResponse)
+async def run_agent(request: AgentRequest, db: AsyncSession = Depends(get_db)):
+    """
+    Run the skills agent on a task (non-streaming).
+
+    The agent will:
+    1. List available skills
+    2. Read relevant skill documentation
+    3. Write and execute code
+    4. Return the final result
+
+    Execution traces are automatically saved to the database.
+    """
+    # Resolve config from agent_id or individual fields
+    config = await _resolve_agent_config(request, db)
+
+    start_time = time.time()
+
+    agent = _create_agent(config)
 
     try:
+<<<<<<< HEAD
         # Pre-compress if context exceeds threshold
         from app.config import settings as app_settings_run
         effective_provider = config.model_provider or app_settings_run.default_model_provider
         effective_model = config.model_name or app_settings_run.default_model_name
         if history:
             history = await pre_compress_if_needed(history, effective_provider, effective_model)
+=======
+        # Load session history from DB
+        agent_id = config.get("agent_id") or CHAT_SENTINEL_AGENT_ID
+        session_id, history = await load_or_create_session(request.session_id, agent_id)
+>>>>>>> feat/spec-tree-plan
 
         # Build the actual request with file info and image blocks
         actual_request, image_contents = _build_request_with_files(
@@ -351,24 +427,36 @@ async def run_agent(request: AgentRequest, db: AsyncSession = Depends(get_db)):
             result=result,
             agent=agent,
             duration_ms=duration_ms,
+<<<<<<< HEAD
             executor_name=config.executor_name,
             session_id=session_id,
+=======
+            executor_name=config.get("executor_name"),
+>>>>>>> feat/spec-tree-plan
         )
         db.add(trace)
         await db.commit()
 
+<<<<<<< HEAD
         # Build display messages using DisplayMessageBuilder
         final_msgs = getattr(result, "final_messages", None)
         display_builder = DisplayMessageBuilder.from_agent_result(result, request.request, request.uploaded_files)
         new_display = display_builder.get_messages()
 
         # Save session (dual-store)
+=======
+        # Save session messages
+>>>>>>> feat/spec-tree-plan
         await save_session_messages(
             session_id,
             result.answer,
             request.request,
+<<<<<<< HEAD
             final_messages=final_msgs,
             display_append_messages=new_display,
+=======
+            final_messages=getattr(result, "final_messages", None),
+>>>>>>> feat/spec-tree-plan
         )
 
         return AgentResponse(
@@ -420,6 +508,7 @@ async def run_agent_stream(request: AgentRequest, db: AsyncSession = Depends(get
         model_name=config.model_name,
     )
 
+<<<<<<< HEAD
     # Load session history from DB (dual-store)
     agent_id_for_session = config.agent_id or CHAT_SENTINEL_AGENT_ID
     session_data = await load_or_create_session(request.session_id, agent_id_for_session)
@@ -433,6 +522,11 @@ async def run_agent_stream(request: AgentRequest, db: AsyncSession = Depends(get
     pre_model = config.model_name or app_settings_pre.default_model_name
     if history:
         history = await pre_compress_if_needed(history, pre_provider, pre_model)
+=======
+    # Load session history from DB
+    agent_id_for_session = config.get("agent_id") or CHAT_SENTINEL_AGENT_ID
+    session_id, history = await load_or_create_session(request.session_id, agent_id_for_session)
+>>>>>>> feat/spec-tree-plan
 
     async def event_generator():
         start_time = time.time()
@@ -446,9 +540,24 @@ async def run_agent_stream(request: AgentRequest, db: AsyncSession = Depends(get
             trace = build_initial_trace(
                 request_text=request.request,
                 model_provider=effective_provider,
+<<<<<<< HEAD
                 model_name=effective_model,
                 executor_name=config.executor_name,
                 session_id=session_id,
+=======
+                model=effective_model,
+                status="running",  # Will be updated on completion
+                success=False,  # Will be updated on completion
+                answer="",
+                error=None,
+                total_turns=0,
+                total_input_tokens=0,
+                total_output_tokens=0,
+                steps=[],
+                llm_calls=[],
+                duration_ms=0,
+                executor_name=config.get("executor_name"),
+>>>>>>> feat/spec-tree-plan
             )
             trace_db.add(trace)
             await trace_db.commit()
@@ -458,8 +567,22 @@ async def run_agent_stream(request: AgentRequest, db: AsyncSession = Depends(get
         yield f"data: {json.dumps({'event_type': 'run_started', 'turn': 0, 'trace_id': trace_id, 'session_id': session_id})}\n\n"
 
         # Create agent, event stream, and cancellation event
+<<<<<<< HEAD
         config.verbose = False
         agent = create_agent(config, workspace_id=session_id)
+=======
+        agent = SkillsAgent(
+            model=config.get("model_name"),
+            model_provider=config.get("model_provider"),
+            max_turns=config["max_turns"],
+            verbose=False,
+            allowed_skills=config["skills"],
+            allowed_tools=config["allowed_tools"],
+            equipped_mcp_servers=config["equipped_mcp_servers"],
+            custom_system_prompt=config["system_prompt"],
+            executor_name=config.get("executor_name"),
+        )
+>>>>>>> feat/spec-tree-plan
 
         event_stream = EventStream()
         cancel_event = asyncio.Event()
@@ -492,6 +615,7 @@ async def run_agent_stream(request: AgentRequest, db: AsyncSession = Depends(get
 
         try:
             async for event in event_stream:
+<<<<<<< HEAD
                 # Heartbeat — SSE comment to keep connection alive through proxies
                 if event.event_type == "heartbeat":
                     yield ": heartbeat\n\n"
@@ -513,6 +637,8 @@ async def run_agent_stream(request: AgentRequest, db: AsyncSession = Depends(get
                             pass  # fire-and-forget
                     continue
 
+=======
+>>>>>>> feat/spec-tree-plan
                 event_data = {
                     "event_type": event.event_type,
                     "turn": event.turn,
@@ -609,6 +735,7 @@ async def run_agent_stream(request: AgentRequest, db: AsyncSession = Depends(get
                 "duration_ms": duration_ms,
             })
 
+<<<<<<< HEAD
             # Save full conversation messages to session (dual-store)
             if session_id:
                 if not was_cancelled and last_complete_event:
@@ -643,6 +770,17 @@ async def run_agent_stream(request: AgentRequest, db: AsyncSession = Depends(get
                         )
                     except Exception:
                         pass
+=======
+            # Save full conversation messages to session
+            if not was_cancelled and session_id and last_complete_event:
+                final_answer = last_complete_event.get("answer", "")
+                await save_session_messages(
+                    session_id,
+                    final_answer,
+                    request.request,
+                    final_messages=last_complete_event.get("final_messages"),
+                )
+>>>>>>> feat/spec-tree-plan
 
         if not was_cancelled:
             yield f"data: {json.dumps({'event_type': 'trace_saved', 'turn': 0, 'trace_id': trace_id})}\n\n"

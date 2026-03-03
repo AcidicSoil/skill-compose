@@ -1,5 +1,6 @@
 'use client';
 
+<<<<<<< HEAD
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -10,6 +11,16 @@ import { useCreateAgentPreset } from '@/hooks/use-agents';
 import { AgentBuilderChat } from '@/components/agents/agent-builder-chat';
 import { AgentConfigForm, type AgentFormValues } from '@/components/agents/agent-config-form';
 import { SessionSidebar } from '@/components/published/session-sidebar';
+=======
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { ArrowLeft, FileText, MessageSquare } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useCreateAgentPreset } from '@/hooks/use-agents';
+import { AgentBuilderChat } from '@/components/agents/agent-builder-chat';
+import { AgentConfigForm, type AgentFormValues } from '@/components/agents/agent-config-form';
+>>>>>>> feat/spec-tree-plan
 import { useTranslation } from '@/i18n/client';
 import { agentPresetsApi, agentApi } from '@/lib/api';
 import { generateUUID } from '@/lib/utils';
@@ -81,6 +92,7 @@ export default function NewAgentPage() {
   const queryClient = useQueryClient();
   const { t } = useTranslation('agents');
 
+<<<<<<< HEAD
   // Active tab
   const [activeTab, setActiveTab] = useState<'chat' | 'form'>('chat');
 
@@ -303,6 +315,24 @@ export default function NewAgentPage() {
   }
 
   // ── Form tab layout ──
+=======
+  const handleSubmit = async (values: AgentFormValues) => {
+    const preset = await createPreset.mutateAsync({
+      name: values.name,
+      description: values.description || undefined,
+      system_prompt: values.system_prompt || undefined,
+      skill_ids: values.skill_ids.length > 0 ? values.skill_ids : undefined,
+      builtin_tools: values.builtin_tools.length > 0 ? values.builtin_tools : undefined,
+      mcp_servers: values.mcp_servers.length > 0 ? values.mcp_servers : undefined,
+      max_turns: values.max_turns,
+      model_provider: values.model_provider || undefined,
+      model_name: values.model_name || undefined,
+      executor_id: values.executor_id || undefined,
+    });
+    router.push(`/agents/${preset.id}`);
+  };
+
+>>>>>>> feat/spec-tree-plan
   return (
     <div className="container mx-auto py-8 max-w-3xl">
       {/* Header */}
@@ -328,6 +358,7 @@ export default function NewAgentPage() {
         size="md"
       />
 
+<<<<<<< HEAD
       {/* Form Mode */}
       <Card>
         <CardHeader>
@@ -342,6 +373,38 @@ export default function NewAgentPage() {
           />
         </CardContent>
       </Card>
+=======
+        {/* Chat Mode */}
+        <TabsContent value="chat">
+          <Card>
+            <CardHeader>
+              <CardTitle>{t('create.chatTitle')}</CardTitle>
+              <CardDescription>{t('create.chatDescription')}</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <AgentBuilderChat />
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Form Mode */}
+        <TabsContent value="form">
+          <Card>
+            <CardHeader>
+              <CardTitle>{t('create.formTitle')}</CardTitle>
+              <CardDescription>{t('create.formDescription')}</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <AgentConfigForm
+                mode="create"
+                isProcessing={createPreset.isPending}
+                onSubmit={handleSubmit}
+              />
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
+>>>>>>> feat/spec-tree-plan
     </div>
   );
 }

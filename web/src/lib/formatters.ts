@@ -17,18 +17,32 @@ export function formatFileSize(bytes: number): string {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
 }
 
+<<<<<<< HEAD
 export function formatRelativeTime(date: string | Date, t?: (key: string, options?: Record<string, unknown>) => string): string {
   const now = Date.now();
   const diff = now - new Date(date).getTime();
+=======
+export function formatRelativeTime(dateStr: string): string {
+  const now = Date.now();
+  const diff = now - new Date(dateStr).getTime();
+>>>>>>> feat/spec-tree-plan
   const minutes = Math.floor(diff / 60000);
   const hours = Math.floor(diff / 3600000);
   const days = Math.floor(diff / 86400000);
 
+<<<<<<< HEAD
   if (minutes < 1) return t ? t('time.now') : 'just now';
   if (minutes < 60) return t ? t('time.minutesAgo', { count: minutes }) : `${minutes}m ago`;
   if (hours < 24) return t ? t('time.hoursAgo', { count: hours }) : `${hours}h ago`;
   if (days < 30) return t ? t('time.daysAgo', { count: days }) : `${days}d ago`;
   return new Date(date).toLocaleDateString();
+=======
+  if (minutes < 1) return 'Just now';
+  if (minutes < 60) return `${minutes}m ago`;
+  if (hours < 24) return `${hours}h ago`;
+  if (days < 7) return `${days}d ago`;
+  return new Date(dateStr).toLocaleDateString();
+>>>>>>> feat/spec-tree-plan
 }
 
 export function getLanguageFromFilename(filename: string): string {

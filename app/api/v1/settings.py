@@ -239,6 +239,13 @@ async def create_env_variable(create: EnvVariableCreate):
     # Mark as user-added custom variable
     _add_custom_key(create.key)
 
+<<<<<<< HEAD
+=======
+    # Update runtime environment
+    os.environ[create.key] = create.value
+    get_settings.cache_clear()
+
+>>>>>>> feat/spec-tree-plan
     return {"success": True, "key": create.key, "message": f"Created {create.key}"}
 
 
@@ -265,6 +272,13 @@ async def update_env_variable(update: EnvVariableUpdate):
     # Write back to file
     _write_env_file(current_values)
 
+<<<<<<< HEAD
+=======
+    # Update runtime environment
+    os.environ[update.key] = update.value
+    get_settings.cache_clear()
+
+>>>>>>> feat/spec-tree-plan
     return {"success": True, "key": update.key, "message": f"Updated {update.key}"}
 
 
@@ -290,6 +304,14 @@ async def delete_env_variable(key: str):
     # Remove from custom keys if present
     _remove_custom_key(key)
 
+<<<<<<< HEAD
+=======
+    # Remove from runtime environment
+    if key in os.environ:
+        del os.environ[key]
+    get_settings.cache_clear()
+
+>>>>>>> feat/spec-tree-plan
     return {"success": True, "key": key, "message": f"Deleted {key}"}
 
 
@@ -309,5 +331,6 @@ async def update_env_variables_batch(updates: list[EnvVariableUpdate]):
         current_values[update.key] = update.value
 
     _write_env_file(current_values)
+    get_settings.cache_clear()
 
     return {"success": True, "updated_count": len(updates)}

@@ -15,7 +15,10 @@ import type {
   RunStartedRecord,
   TraceSavedRecord,
   SteeringReceivedRecord,
+<<<<<<< HEAD
   AskUserRecord,
+=======
+>>>>>>> feat/spec-tree-plan
 } from '@/types/stream-events';
 
 let eventIdCounter = 0;
@@ -143,6 +146,7 @@ export function mapEventToRecord(event: StreamEvent): StreamEventRecord | null {
         type: 'steering_received',
         data: {
           message: event.message || '',
+<<<<<<< HEAD
           steeringId: event.steering_id,
         },
       } as SteeringReceivedRecord;
@@ -159,6 +163,11 @@ export function mapEventToRecord(event: StreamEvent): StreamEventRecord | null {
         },
       } as AskUserRecord;
 
+=======
+        },
+      } as SteeringReceivedRecord;
+
+>>>>>>> feat/spec-tree-plan
     default:
       return null;
   }
@@ -288,6 +297,7 @@ export function serializeEventsToText(events: StreamEventRecord[]): string {
         result += `\n🎯 Steering: ${event.data.message}\n`;
         break;
 
+<<<<<<< HEAD
       case 'ask_user':
         result += `\n❓ Question: ${event.data.question}\n`;
         if (event.data.options) {
@@ -295,6 +305,8 @@ export function serializeEventsToText(events: StreamEventRecord[]): string {
         }
         break;
 
+=======
+>>>>>>> feat/spec-tree-plan
       // run_started and trace_saved don't produce visible text
       case 'run_started':
       case 'trace_saved':

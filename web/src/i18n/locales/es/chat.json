@@ -115,7 +115,10 @@
     "notAvailable": "Este agente no está disponible.",
     "sessionId": "Sesión",
     "sessionIdCopied": "ID de sesión copiado",
+<<<<<<< HEAD
     "loadingSession": "Cargando conversación...",
+=======
+>>>>>>> feat/spec-tree-plan
     "sidebar": {
       "title": "Historial",
       "noSessions": "Sin conversaciones",
@@ -131,6 +134,7 @@
       "messagesCount": "{{count}} msg",
       "messagesCount_other": "{{count}} msgs"
     }
+<<<<<<< HEAD
   },
   "askUser": {
     "waitingForResponse": "Esperando tu respuesta...",
@@ -138,5 +142,7 @@
     "typeAnswer": "Escribe tu respuesta...",
     "submit": "Enviar",
     "timedOut": "Tiempo de respuesta agotado"
+=======
+>>>>>>> feat/spec-tree-plan
   }
 }

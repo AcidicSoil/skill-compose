@@ -317,7 +317,11 @@
     "evolutionComplete": "Evolução completa!",
     "viewSkill": "Ver Skill",
     "backToSelection": "Voltar à seleção",
+<<<<<<< HEAD
     "agentNotFound": "Agente agent-skill-evolver não encontrado. Reinicie o backend para inicializá-lo.",
+=======
+    "agentNotFound": "Agente skill-evolve-helper não encontrado. Reinicie o backend para inicializá-lo.",
+>>>>>>> feat/spec-tree-plan
     "noUserSkills": "Nenhum skill de usuário encontrado.",
     "createOneFirst": "Crie um primeiro",
     "failedToRunAgent": "Falha ao executar o agente",
@@ -329,9 +333,13 @@
       "turns": "Turnos: {{count}}",
       "tokens": "Tokens: {{count}}",
       "duration": "Duração: {{duration}}s"
+<<<<<<< HEAD
     },
     "newChat": "Novo Chat",
     "history": "Histórico"
+=======
+    }
+>>>>>>> feat/spec-tree-plan
   },
   "sync": {
     "title": "Sincronização do Sistema de Arquivos",
@@ -402,6 +410,7 @@
       "invalidJson": "JSON inválido em {{name}}",
       "skillMdRequired": "O conteúdo do SKILL.md é obrigatório"
     }
+<<<<<<< HEAD
   },
   "seedDescriptions": {
     "skill-creator": "Guia para criar habilidades eficazes que estendam as capacidades do agente com conhecimento especializado, fluxos de trabalho ou integrações de ferramentas.",
@@ -438,5 +447,7 @@
     "twitter-algorithm-optimizer": "Analisa e otimiza tweets para máximo alcance usando insights do algoritmo de código aberto do Twitter. Reescreve e edita tweets para melhorar o engajamento com base em sinais de ranking.",
     "slack-gif-creator": "Kit de ferramentas para criar GIFs animados otimizados para Slack. Validadores de restrições de tamanho, primitivas de animação combináveis e utilitários para GIFs de mensagem e emoji.",
     "humanizer-zh": "Remove traços de escrita gerada por IA em textos em chinês. Detecta e corrige padrões como simbolismo exagerado, linguagem promocional, análise superficial, atribuição vaga, uso excessivo de travessões, abuso da regra de três e vocabulário de IA."
+=======
+>>>>>>> feat/spec-tree-plan
   }
 }
